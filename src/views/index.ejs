@@ -105,7 +105,7 @@
           class="alert alert-warning alert-dismissible fade show"
           role="alert"
         >
-          <strong>Your short link copied: </strong>
+          <strong id='msg-text'></strong>
           <button
             type="button"
             class="close"
@@ -116,6 +116,7 @@
           </button>
         </div>
         <% if (locals.id) { %>
+          <input type="hidden" value='<%= id %>' id='short-id'>
         <div>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -123,9 +124,7 @@
                 Here's short URL
               </button>
             </div>
-            <span class="form-control" id="short-url-link">
-              http://localhost:5000/url/<%= locals.id %>
-            </span>
+            <span class="form-control" id="short-url-link"></span>
             <button
               type="button"
               style="padding: 5px"

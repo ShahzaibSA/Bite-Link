@@ -79,19 +79,28 @@
       });
   });
 
-  $('.copy-to-clipboard').click(function () {
-    console.log('TESTING');
-    var copyText = document.getElementById('short-url-link');
-    console.log(copyText);
+  $(document).ready(function (e) {
+    if ($('#short-id').val()) {
+      const link = window.location.href + '/' + $('#short-id').val();
+      $('#short-url-link').text(link);
+      $('#msg-text').text('Your short link successfully generated.');
+      $('#message-div')
+        .fadeTo(3000, 500)
+        .slideUp(500, function () {
+          $('#message-div').slideUp(500);
+        });
+    }
+  });
 
+  $('.copy-to-clipboard').click(function () {
+    const copyText = document.getElementById('short-url-link');
     // Copy the text inside the text field
     navigator.clipboard.writeText(copyText.innerText);
 
     // Alert the copied text
-    // alert('Copied the link: ' + copyText.innerText);
-
+    $('#msg-text').text('Your short link copied: ');
     $('#message-div')
-      .fadeTo(2000, 500)
+      .fadeTo(3000, 500)
       .slideUp(500, function () {
         $('#message-div').slideUp(500);
       });
