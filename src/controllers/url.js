@@ -67,9 +67,9 @@ const handleRedirectUrl = async function (req, res) {
 const handleGetAnalytics = async function (req, res) {
   const id = req.query.url ? req.query.url.split('/url/')[1] : '';
 
-  if (!id || !shortid.isValid(id)) {
-    return res.render('analytics');
-  }
+  // if (!id || !shortid.isValid(id)) {
+  //   return res.render('analytics');
+  // }
 
   try {
     const result = await Url.findOne({ shortId: id });
