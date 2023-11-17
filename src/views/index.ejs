@@ -9,7 +9,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Bite Link</title>
-    <link type="image/png" rel="icon" href="assets/img/pngaaa.com-5822549(1).svg" />
+    <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
     <!-- Font Awesome icons (free version)-->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
@@ -24,7 +24,10 @@
   <body id="page-top">
     <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">BITE LINK</a>
+        <img src="/assets/img/logo.svg" width="35px" alt="logo" />
+        <a class="navbar-brand js-scroll-trigger ml-3" href="#page-top"
+          >BITE LINK</a
+        >
         <button
           class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded"
           type="button"
@@ -40,9 +43,17 @@
           <ul class="navbar-nav ml-auto">
             <li class="nav-item mx-0 mx-lg-1">
               <a
-                class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="/url"
+                class="nav-link py-2 px-0 px-lg-3 rounded js-scroll-trigger"
+                href="/url/analytics"
                 >ANALYTICS</a
+              >
+            </li>
+            <li class="nav-item mx-0 mx-lg-1">
+              <a
+                role="button"
+                aria-pressed="true"
+                class="logout-btn nav-link py-2 px-0 px-lg-3 rounded js-scroll-trigger"
+                >LOGOUT</a
               >
             </li>
           </ul>
@@ -54,7 +65,7 @@
         <!-- Masthead Avatar Image--><img
           style="width: 16%"
           class="masthead-avatar mb-5"
-          src="assets/img/pngaaa.com-5822549(1).svg"
+          src="/assets/img/logo.svg"
           alt="url-shortener.png"
         />
         <!-- Masthead Heading-->
@@ -81,7 +92,8 @@
         <p class="pre-wrap masthead-subheading font-weight-light mb-0">
           Shorten a long link
         </p>
-        <form action="/url" method="POST">
+        <div class="message-div"></div>
+        <form class="url-form">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon3"
@@ -89,10 +101,12 @@
               >
             </div>
             <input
-              placeholder="https://example.com/users/"
-              type="text"
-              class="form-control"
+              required
+              type="url"
               name="url"
+              placeholder="https://example.com/users/"
+              class="form-control"
+              value="https://www.flaticon.com/free-icons/tick"
             />
             &nbsp;
             <button type="submit" class="btn btn-primary btn-sm">
@@ -100,41 +114,7 @@
             </button>
           </div>
         </form>
-        <div
-          id="message-div"
-          class="alert alert-warning alert-dismissible fade show"
-          role="alert"
-        >
-          <strong id='msg-text'></strong>
-          <button
-            type="button"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <% if (locals.id) { %>
-          <input type="hidden" value='<%= id %>' id='short-id'>
-        <div>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <button class="input-group-text" id="basic-addon3">
-                Here's short URL
-              </button>
-            </div>
-            <span class="form-control" id="short-url-link"></span>
-            <button
-              type="button"
-              style="padding: 5px"
-              class="copy-to-clipboard btn btn-primary btn-sm"
-            >
-              Copy Link
-            </button>
-          </div>
-        </div>
-        <% } %>
+        <div class="short-url-div"></div>
       </div>
     </header>
 
@@ -237,7 +217,7 @@
     <!-- Copyright Section-->
     <section class="copyright py-4 text-center text-white">
       <div class="container">
-        <small class="pre-wrap">Copyright © Your Website 2020</small>
+        <small class="pre-wrap">Copyright © BITE LINK Website 2024</small>
       </div>
     </section>
     <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
@@ -253,10 +233,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <!-- Third party plugin JS-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-    <!-- Contact form JS-->
-    <script src="assets/mail/jqBootstrapValidation.js"></script>
-    <script src="assets/mail/contact_me.js"></script>
     <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scripts.js"></script>
   </body>
 </html>

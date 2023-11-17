@@ -78,31 +78,15 @@
         $(this).removeClass('floating-label-form-group-with-focus');
       });
   });
-
-  $(document).ready(function (e) {
-    if ($('#short-id').val()) {
-      const link = window.location.href + '/' + $('#short-id').val();
-      $('#short-url-link').text(link);
-      $('#msg-text').text('Your short link successfully generated.');
-      $('#message-div')
-        .fadeTo(3000, 500)
-        .slideUp(500, function () {
-          $('#message-div').slideUp(500);
-        });
-    }
-  });
-
-  $('.copy-to-clipboard').click(function () {
-    const copyText = document.getElementById('short-url-link');
-    // Copy the text inside the text field
-    navigator.clipboard.writeText(copyText.innerText);
-
-    // Alert the copied text
-    $('#msg-text').text('Your short link copied: ');
-    $('#message-div')
-      .fadeTo(3000, 500)
-      .slideUp(500, function () {
-        $('#message-div').slideUp(500);
-      });
-  });
 })(jQuery); // End of use strict
+
+//! >>>>>> Helper functions >>>>>>
+
+const copyToClipboard = function () {
+  const copyText = document.getElementById('short-url-link');
+  // Copy the text inside the text field
+  navigator.clipboard.writeText(copyText.innerText);
+
+  // Alert the copied text
+  showMessage('Your short link copied!', 'success');
+};

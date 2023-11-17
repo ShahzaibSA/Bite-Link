@@ -9,10 +9,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Bite Link</title>
-    <link type="image/png" rel="icon" href="assets/img/pngaaa.com-5822549(1).svg" />
-    <!-- <link rel="icon" href= 
-"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png" 
-          type="image/x-icon">  -->
+    <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
     <!-- Font Awesome icons (free version)-->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
@@ -28,7 +25,8 @@
     <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
       <div class="container">
         <!-- href="#page-top" -->
-        <a class="navbar-brand js-scroll-trigger" href="/">URL SHORTENER</a>
+        <img src="/assets/img/logo.svg" width="35px" alt="logo" />
+        <a class="navbar-brand js-scroll-trigger ml-3" href="/">BITE LINK</a>
         <button
           class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded"
           type="button"
@@ -44,9 +42,17 @@
           <ul class="navbar-nav ml-auto">
             <li class="nav-item mx-0 mx-lg-1">
               <a
-                class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
-                href="/url"
-                >ANALYTICS</a
+                class="nav-link py-2 px-0 px-lg-3 rounded js-scroll-trigger"
+                href="/"
+                >HOME</a
+              >
+            </li>
+            <li class="nav-item mx-0 mx-lg-1">
+              <a
+                role="button"
+                aria-pressed="true"
+                class="logout-btn nav-link py-2 px-0 px-lg-3 rounded js-scroll-trigger"
+                >LOGOUT</a
               >
             </li>
           </ul>
@@ -58,7 +64,7 @@
         <!-- Masthead Avatar Image--><img
           style="width: 16%"
           class="masthead-avatar mb-5"
-          src="assets/img/pngaaa.com-5822549(1).svg"
+          src="/assets/img/logo.svg"
           alt="url-shortener.png"
         />
         <!-- Masthead Heading-->
@@ -85,7 +91,8 @@
         <p class="pre-wrap masthead-subheading font-weight-light mb-0 pr-5">
           Check your analytics of URL
         </p>
-        <form action="/url">
+        <div class="message-div"></div>
+        <form class="analytics-form">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon3"
@@ -93,10 +100,12 @@
               >
             </div>
             <input
-              placeholder="https://example.com/users/"
-              type="text"
-              class="form-control"
+              required
               name="url"
+              type="url"
+              class="form-control"
+              placeholder="https://example.com/users/"
+              value="http://localhost:5000/url/UpeOZUJKP"
             />
             &nbsp;
             <button type="submit" class="btn btn-primary btn-sm">
@@ -104,7 +113,22 @@
             </button>
           </div>
         </form>
-        <% if (locals.shortId && !locals.totalClicks) { %>
+        <div class="analytics-data-div" style="display: none">
+          <table class="table table-bordered">
+            <thead style="color: #2c3e50">
+              <tr>
+                <th scope="col">
+                  Total Clicks : <span class="total-clicks"></span>
+                </th>
+                <th scope="col">Date</th>
+                <th scope="col">Ip Address</th>
+                <th scope="col">Original URL</th>
+              </tr>
+            </thead>
+            <tbody class="table-body"></tbody>
+          </table>
+        </div>
+        <!-- <% if (locals.shortId && !locals.totalClicks) { %>
         <h3>No Analytics found!</h3>
         <% } %> <% if (locals.shortId && locals.totalClicks) { %>
         <div>
@@ -130,7 +154,7 @@
           </table>
         </div>
 
-        <% } %>
+        <% } %> -->
       </div>
     </header>
 
@@ -249,10 +273,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <!-- Third party plugin JS-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-    <!-- Contact form JS-->
-    <script src="assets/mail/jqBootstrapValidation.js"></script>
-    <script src="assets/mail/contact_me.js"></script>
-    <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <!-- Core JS -->
+    <script src="/js/main.js"></script>
+    <script src="/js/scripts.js"></script>
   </body>
 </html>

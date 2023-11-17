@@ -4,15 +4,22 @@ const Url = require('../models/url');
 
 const handleGenerateShortUrl = async function (req, res) {
   const body = req.body;
-  if (!body) return res.status(400).send({ error: 'Please send valid Url!' });
+  // if (!body.url) return res.status(400).send({ error: 'Please send valid Url!' });
+
   try {
     const id = shortid.generate();
-    const result = await Url.create({ shortId: id, redirectUrl: body.url });
-    return res.render('index', {
-      id: result.shortId
+    const result = await Url.create({
+      shortId: id,
+      redirectUrl: body.url,
+      createdBy: req.user._id
     });
+    // return res.render('index', {
+    //   id: result.shortId
+    // });
+    return res.send({ id: result.shortId });
   } catch (error) {
-    res.status(500).send(error);
+    res.status(400).send({ error });
+    // res.status(500).send(error);
   }
 };
 
@@ -72,8 +79,12 @@ const handleGetAnalytics = async function (req, res) {
   }
 
   try {
-    const result = await Url.findOne({ shortId: id });
-    if (!result) return res.status(404).send({ error: 'Url is not valid!' });
+    const result = await Url.findOne({ shortId: id, createdBy: req.user._id });
+    
+    if (!result) return res.status(404).send({ msg: 'Url is not valid!' });
+
+    if (!result.visitHistory.length)
+      return res.status(404).send({ msg: 'No Data Found!' });
 
     var clickHistory = result.visitHistory.map((history) => {
       return {
@@ -81,7 +92,7 @@ const handleGetAnalytics = async function (req, res) {
         ipAddress: history.ipAddress
       };
     });
-    return res.render('analytics', {
+    return res.send({
       totalClicks: result.visitHistory.length,
       clickHistory: clickHistory,
       redirectUrl: result.redirectUrl,
