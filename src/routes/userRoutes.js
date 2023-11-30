@@ -1,16 +1,19 @@
 const express = require('express');
-const { restrictToLoggedInUser } = require('../middlewares/auth');
+const { verifyJWT } = require('../middlewares/auth');
 const {
   handleSignUpUser,
   handleloginUser,
-  handlelogoutUser
-} = require('../controllers/user');
+  handlelogoutUser,
+  handlelogoutAllUsers
+} = require('../controllers/userController');
 const router = express.Router();
 
 router.post('/', handleSignUpUser);
 
 router.post('/login', handleloginUser);
 
-router.post('/logout', restrictToLoggedInUser, handlelogoutUser);
+router.post('/logout', verifyJWT, handlelogoutUser);
+
+router.post('/logoutAll', verifyJWT, handlelogoutAllUsers);
 
 module.exports = router;
