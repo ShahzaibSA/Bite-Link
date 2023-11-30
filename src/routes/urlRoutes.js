@@ -1,17 +1,14 @@
 const express = require('express');
-const { restrictToLoggedInUser } = require('../middlewares/auth');
-const {
-  handleGenerateShortUrl,
-  handleRedirectUrl,
-  handleGetAnalytics
-} = require('../controllers/url');
+const { verifyJWT } = require('../middlewares/auth');
+const { handleGenerateShortUrl, handleRedirectUrl, handleGetAnalytics } = require('../controllers/urlController');
 
 const router = express.Router();
 
-router.post('/', restrictToLoggedInUser, handleGenerateShortUrl);
+router.post('/', verifyJWT, handleGenerateShortUrl);
 
-router.get('/analytics', restrictToLoggedInUser, handleGetAnalytics);
+router.get('/analytics', verifyJWT, handleGetAnalytics);
 
+//! FOR ALL USERS
 router.get('/:shortId', handleRedirectUrl);
 
 module.exports = router;

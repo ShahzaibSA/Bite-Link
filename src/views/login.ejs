@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Login</title>
     <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
 
     <!-- Font Icon -->
-    <link rel="stylesheet" href="/fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="/fonts/material-icon/css/material-design-iconic-font.min.css" />
 
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/styles.css" rel="stylesheet" />
@@ -17,72 +17,88 @@
     <link rel="stylesheet" href="/css/body.css" />
 
     <!-- Main css -->
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body class='html-body'>
-     <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
-        <div>
-            <img src="/assets/img/logo.svg" alt="logo">
-            <span>BITE LINK</span>
-        </div>
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <script src="/js/main.js" defer></script>
+  </head>
+  <body class="html-body">
+    <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
+      <div>
+        <img src="/assets/img/logo.svg" alt="logo" />
+        <span>BITE LINK</span>
+      </div>
     </nav>
-    <div class='body-container'>
-        <!-- <div class='container message-div' style='width: 900px;'></div> -->
-        <!-- Sing in  Form -->
-        <section class="sign-in">
-            <div class='message-div'></div>
-            <div class="container">
-                <div class="signin-content">
-                    <div class="signin-image">
-                        <figure><img src="/assets/img/signin-image.jpg" alt="sing up image"></figure>
-                        <a href="/signup" class="signup-image-link">Create an account</a>
-                    </div>
-
-                    <div class="signin-form" style='margin-top: 5vh;'>
-                        <h2 class="form-title">Sign in</h2>
-                        <form class="login-form" id="login-form">
-                            <div class="form-group">
-                                <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                <input value='shahzaibsaa1@gmail.com' type="email" name="email" id="email" placeholder="Your Email"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                                <input value='shah123' type="password" name="password" id="your_pass" placeholder="Password"/>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
-                                <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-                            </div>
-                            <div class='d-flex d-inline'>
-                                <div class="form-group form-button">
-                                    <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
-                                </div>
-                                <div class="spinner-div d-none my-4 mx-4" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                            </div>
-
-                        </form>
-                        <!-- <div class="social-login">
-                            <span class="social-label">Or login with</span>
-                            <ul class="socials">
-                                <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
-                                <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
-                                <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
-                            </ul>
-                        </div> -->
-                    </div>
-                </div>
+    <div class="body-container">
+      <!-- <div class='container message-div' style='width: 900px;'></div> -->
+      <!-- Sing in  Form -->
+      <section class="sign-in">
+        <div class="message-div"></div>
+        <div class="container">
+          <div class="signin-content">
+            <div class="signin-image">
+              <figure><img src="/assets/img/signin-image.jpg" alt="sing up image" /></figure>
+              <a href="/signup" class="signup-image-link">Create an account</a>
             </div>
-        </section>
 
+            <div class="signin-form" style="margin-top: 2vh">
+              <h2 class="form-title">Sign in</h2>
+              <form class="login-form" id="login-form">
+                <div class="form-group">
+                  <label for="email"><i class="zmdi zmdi-email"></i></label>
+                  <input
+                    required
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Your Email"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                  <input
+                    required
+                    type="password"
+                    name="password"
+                    id="your_pass"
+                    placeholder="Password"
+                  />
+                </div>
+                <div class="form-group">
+                  <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                  <label for="remember-me" class="label-agree-term"
+                    ><span><span></span></span>Remember me</label
+                  >
+                </div>
+                <div class="d-flex d-inline">
+                  <div class="form-group form-button">
+                    <input  type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
+                  </div>
+                  <div class="spinner-div d-none my-4 mx-4" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <!-- Jquery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
 
-    <!-- JS -->
-    <!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
-    <script src="/js/main.js"></script>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+    <!-- Crypto Js -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+      integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </body>
+  <!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
