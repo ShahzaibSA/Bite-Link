@@ -262,13 +262,15 @@ $('.analytics-form').on('submit', function (e) {
   // if (!validateUrl($('input[name="url"]').val())) {
   //   return showMessage('Url is not valid!', 'error');
   // }
+  const url = $('input[name="url"]').val();
+  console.log('URL =>', url);
+  const id = url ? url.split('/url/')[1] : '';
+  console.log('ID =>', id);
   $('button[type="submit"]').attr('disabled', true);
   $.ajax({
     type: 'GET',
     url: '/url/analytics',
-    data: {
-      url: $('input[name="url"]').val()
-    },
+    data: { id },
     beforeSend: setReqHeader,
     success: function (result) {
       $('button[type="submit"]').removeAttr('disabled');
