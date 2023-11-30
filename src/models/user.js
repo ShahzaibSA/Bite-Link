@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema(
       // minlength: 5,
       trim: true,
       validate(value) {
-        console.log(value);
         if (value.toLowerCase().includes('password')) {
           throw new Error('Password cannot contain "password"');
         } else if (value.length < 5) {

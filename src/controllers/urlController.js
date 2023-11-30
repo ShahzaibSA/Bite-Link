@@ -46,17 +46,13 @@ const handleRedirectUrl = async function (req, res) {
 };
 
 const handleGetAnalytics = async function (req, res) {
-  console.log(req.query.url);
   const id = req.query.id;
-  console.log('ID =>', id);
-  // console.log('req.user :>> ', req.user);
   if (!id) {
     return res.status(404).send({ error: 'Url is not valid!' });
   }
 
   try {
     const result = await Url.findOne({ shortId: id, createdBy: req.user._id });
-    console.log('result :>> ', result);
     if (!result) return res.status(404).send({ error: 'Url is not correct!' });
 
     if (!result.visitHistory.length) return res.status(404).send({ error: 'No Data Found!' });

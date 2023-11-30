@@ -259,13 +259,10 @@ $('.url-form').on('submit', function (e) {
 
 $('.analytics-form').on('submit', function (e) {
   e.preventDefault();
-  // if (!validateUrl($('input[name="url"]').val())) {
-  //   return showMessage('Url is not valid!', 'error');
-  // }
-  const url = $('input[name="url"]').val();
-  console.log('URL =>', url);
-  const id = url ? url.split('/url/')[1] : '';
-  console.log('ID =>', id);
+  if (!validateUrl($('input[name="url"]').val())) {
+    return showMessage('Url is not valid!', 'error');
+  }
+  const id = $('input[name="url"]').val().split('/url/')[1];
   $('button[type="submit"]').attr('disabled', true);
   $.ajax({
     type: 'GET',
