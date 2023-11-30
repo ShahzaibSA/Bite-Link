@@ -46,6 +46,7 @@ const handleRedirectUrl = async function (req, res) {
 };
 
 const handleGetAnalytics = async function (req, res) {
+  console.log(req.query.url);
   const id = req.query.url ? req.query.url.split('/url/')[1] : '';
   console.log('ID =>', id);
   // console.log('req.user :>> ', req.user);
