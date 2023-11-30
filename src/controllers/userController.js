@@ -39,7 +39,7 @@ const handleloginUser = async function (req, res) {
       ? user.refreshTokens.filter((rt) => rt.refreshToken !== refreshTokenCookie)
       : user.refreshTokens;
 
-    const accessToken = generateToken(user.email, 'AT', '6s');
+    const accessToken = generateToken(user.email, 'AT', '10m');
     const jwt = generateToken(user.email, 'JWT', '1d');
     const newRefreshToken = generateToken(user._id.toString(), 'RT', '1d');
 
