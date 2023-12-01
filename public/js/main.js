@@ -283,6 +283,7 @@ $('.analytics-form').on('submit', function (e) {
   const id = $('input[name="url"]').val().split('/url/')[1];
   if (!id) return showMessage('Please valid url!');
   $('button[type="submit"]').attr('disabled', true);
+  $('.analytics-data-div').css('display', 'none');
   spinner.start();
   $.ajax({
     type: 'GET',
