@@ -60,13 +60,13 @@ const validateUrl = function (url) {
 };
 
 const spinner = {
-  start: function () {
-    $('.spinner-div').removeClass('d-none');
-    $('.spinner-div').addClass('spinner-border');
+  start: function (type) {
+    $(`.spinner-${type ? type : 'div'}`).removeClass('d-none');
+    $(`.spinner-${type ? type : 'div'}`).addClass('spinner-border');
   },
-  stop: function () {
-    $('.spinner-div').addClass('d-none');
-    $('.spinner-div').removeClass('spinner-border');
+  stop: function (type) {
+    $(`.spinner-${type ? type : 'div'}`).addClass('d-none');
+    $(`.spinner-${type ? type : 'div'}`).removeClass('spinner-border');
   }
 };
 
@@ -191,17 +191,17 @@ $('.login-form').on('submit', function (e) {
 });
 
 $('.logout-btn').click(function () {
-  spinner.start();
+  spinner.start('center');
   $.ajax({
     type: 'POST',
     url: '/users/logout',
     beforeSend: setReqHeader,
     success: function (result) {
-      spinner.stop();
+      spinner.stop('center');
       location.replace(result.redirectUrl);
     },
     error: async function (error) {
-      spinner.stop();
+      spinner.stop('center');
       if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
         try {
           const newAccessToken = await getNewAccessToken();
