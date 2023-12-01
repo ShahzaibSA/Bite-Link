@@ -275,9 +275,9 @@ $('.url-form').on('submit', function (e) {
 
 $('.analytics-form').on('submit', function (e) {
   e.preventDefault();
-  // if (!validateUrl($('input[name="url"]').val())) {
-  //   return showMessage('Url is not valid!', 'error');
-  // }
+  if (!validateUrl($('input[name="url"]').val())) {
+    return showMessage('Url is not valid!', 'error');
+  }
   const id = $('input[name="url"]').val().split('/url/')[1];
   if (!id) return showMessage('Please valid url!');
   $('button[type="submit"]').attr('disabled', true);
