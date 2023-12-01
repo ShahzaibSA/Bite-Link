@@ -191,14 +191,17 @@ $('.login-form').on('submit', function (e) {
 });
 
 $('.logout-btn').click(function () {
+  spinner.start();
   $.ajax({
     type: 'POST',
     url: '/users/logout',
     beforeSend: setReqHeader,
     success: function (result) {
+      spinner.stop();
       location.replace(result.redirectUrl);
     },
     error: async function (error) {
+      spinner.stop();
       if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
         try {
           const newAccessToken = await getNewAccessToken();
@@ -230,6 +233,7 @@ $('.url-form').on('submit', function (e) {
     return showMessage('Error: Url is not valid!', 'error');
   }
   $('button[type="submit"]').attr('disabled', true);
+  spinner.start();
   $.ajax({
     type: 'POST',
     url: '/url',
@@ -237,10 +241,12 @@ $('.url-form').on('submit', function (e) {
     data: $('form').serialize(),
     success: function (result) {
       $('button[type="submit"]').removeAttr('disabled');
+      spinner.stop();
       showNewGeneratedUrl(result);
     },
     error: async function (error) {
       $('button[type="submit"]').removeAttr('disabled');
+      spinner.stop();
       if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
         try {
           const newAccessToken = await getNewAccessToken();
@@ -269,12 +275,13 @@ $('.url-form').on('submit', function (e) {
 
 $('.analytics-form').on('submit', function (e) {
   e.preventDefault();
-  if (!validateUrl($('input[name="url"]').val())) {
-    return showMessage('Url is not valid!', 'error');
-  }
+  // if (!validateUrl($('input[name="url"]').val())) {
+  //   return showMessage('Url is not valid!', 'error');
+  // }
   const id = $('input[name="url"]').val().split('/url/')[1];
-  if(!id) return showMessage('Please valid url!')
+  if (!id) return showMessage('Please valid url!');
   $('button[type="submit"]').attr('disabled', true);
+  spinner.start();
   $.ajax({
     type: 'GET',
     url: '/url/analytics',
@@ -282,6 +289,7 @@ $('.analytics-form').on('submit', function (e) {
     beforeSend: setReqHeader,
     success: function (result) {
       $('button[type="submit"]').removeAttr('disabled');
+      spinner.stop();
       $('.analytics-data-div').css('display', 'block');
       $('.table-body').empty();
       result.clickHistory?.forEach((history, index) => {
@@ -300,6 +308,7 @@ $('.analytics-form').on('submit', function (e) {
     },
     error: async function (error) {
       $('button[type="submit"]').removeAttr('disabled');
+      spinner.stop();
       if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
         const newAccessToken = await getNewAccessToken();
         if (!newAccessToken) return location.replace('/login');
