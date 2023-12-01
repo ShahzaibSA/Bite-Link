@@ -197,11 +197,9 @@ $('.logout-btn').click(function () {
     url: '/users/logout',
     beforeSend: setReqHeader,
     success: function (result) {
-      spinner.stop('center');
       location.replace(result.redirectUrl);
     },
     error: async function (error) {
-      spinner.stop('center');
       if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
         try {
           const newAccessToken = await getNewAccessToken();
@@ -224,7 +222,10 @@ $('.logout-btn').click(function () {
         showMessage(error, 'error');
       }
     }
-  }).done(() => deleteAccessToken());
+  }).done(() => {
+    spinner.stop('center');
+    deleteAccessToken();
+  });
 });
 
 $('.url-form').on('submit', function (e) {
