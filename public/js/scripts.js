@@ -79,14 +79,3 @@
       });
   });
 })(jQuery); // End of use strict
-
-//! >>>>>> Helper functions >>>>>>
-
-const copyToClipboard = function () {
-  const copyText = document.getElementById('short-url-link');
-  // Copy the text inside the text field
-  navigator.clipboard.writeText(copyText.innerText);
-
-  // Alert the copied text
-  showMessage('Your short link copied!', 'success');
-};

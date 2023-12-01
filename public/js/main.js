@@ -1,6 +1,15 @@
 // console.clear();
 var SECRET_KEY = '@cce$$T0ken$ecretKey@1996';
 
+const copyToClipboard = function () {
+  const copyText = document.getElementById('short-url-link');
+  // Copy the text inside the text field
+  navigator.clipboard.writeText(copyText.innerText);
+
+  // Alert the copied text
+  showMessage('Your short link copied!', 'success');
+};
+
 const showMessage = function (msg, msgType) {
   let color, icon;
   if (msgType == 'success') {
@@ -101,7 +110,8 @@ const showNewGeneratedUrl = function (result) {
                   Here's short URL
                 </button>
               </div>
-              <span class="form-control" id="short-url-link">${link}</span>
+              <a class="form-control" id="short-url-link" data-toggle="tooltip" data-placement="top"
+                title="Click to open in new tab" href="${link}" target="_blank">${link}</a>
               <button
                 type="button"
                 style="padding: 5px"
@@ -263,6 +273,7 @@ $('.analytics-form').on('submit', function (e) {
     return showMessage('Url is not valid!', 'error');
   }
   const id = $('input[name="url"]').val().split('/url/')[1];
+  if(!id) return showMessage('Please valid url!')
   $('button[type="submit"]').attr('disabled', true);
   $.ajax({
     type: 'GET',
