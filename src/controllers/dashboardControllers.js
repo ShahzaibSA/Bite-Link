@@ -7,11 +7,7 @@ const handleDashboard = async function (req, res) {
     var runningLinks = 0;
     const data = urls.map((url) => {
       totalClicks += url.visitHistory.length;
-<<<<<<< HEAD
       if (url.status == 'running') runningLinks++;
-=======
-      if (url.status == 'running') runningLinks++; 
->>>>>>> 74cef45f1eece7df70e2b6be8d1dd994b27c6ede
       return {
         redirectUrl: url.redirectUrl,
         visitHistory: url.visitHistory,
@@ -26,11 +22,8 @@ const handleDashboard = async function (req, res) {
 };
 
 const handleUrlsData = async function (req, res) {
-<<<<<<< HEAD
-  console.log(req);
-  console.log(req.get('origin'));
-=======
->>>>>>> 74cef45f1eece7df70e2b6be8d1dd994b27c6ede
+  console.log('REQ =>', req);
+  console.log('ORIGIN =>', req.get('origin'));
   try {
     const urls = await Url.find({ createdBy: req.user._id });
     const data = urls.map((url, i) => {
