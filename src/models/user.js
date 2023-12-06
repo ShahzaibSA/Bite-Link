@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true
     },
+    fullName: {
+      type: String,
+      trim: true,
+      lowercase: true
+    },
     email: {
       type: String,
       unique: true,
@@ -19,6 +24,9 @@ const userSchema = new mongoose.Schema(
           throw new Error('Email is invalid!');
         }
       }
+    },
+    location: {
+      type: String
     },
     password: {
       type: String,
@@ -48,6 +56,15 @@ const userSchema = new mongoose.Schema(
 //   user.tokens = user.tokens.push(token);
 // };
 
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userObject = user.toObject();
+
+  delete userObject.password;
+  delete userObject.refreshTokens;
+
+  return userObject;
+};
 const User = mongoose.model('users', userSchema);
 
 module.exports = User;

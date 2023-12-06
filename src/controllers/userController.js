@@ -6,9 +6,9 @@ const generateToken = require('../utils/generateToken');
 
 const handleSignUpUser = async function (req, res) {
   try {
-    const { email, password } = req.body;
-    const hashedPwd = await bcrypt.hash(password, 10);
-    await User.create({ email, password: hashedPwd });
+    const body = req.body;
+    const hashedPwd = await bcrypt.hash(body.password, 10);
+    await User.create({ ...body, password: hashedPwd });
     res.status(201).send({ redirectUrl: req.get('origin') + '/login' });
   } catch (error) {
     res.status(403).send(error);

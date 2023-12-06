@@ -11,16 +11,20 @@ const urlSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    status: {
+      type: String,
+      default: 'running'
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users'
+    },
     visitHistory: [
       {
         timestamp: { type: Number },
         ipAddress: { type: String }
       }
-    ],
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users'
-    }
+    ]
   },
   { timestamps: true }
 );
