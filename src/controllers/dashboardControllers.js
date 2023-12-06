@@ -22,8 +22,6 @@ const handleDashboard = async function (req, res) {
 };
 
 const handleUrlsData = async function (req, res) {
-  console.log('REQ =>', req);
-  console.log('ORIGIN =>', req.get('origin'));
   try {
     const urls = await Url.find({ createdBy: req.user._id });
     const data = urls.map((url, i) => {
@@ -34,8 +32,7 @@ const handleUrlsData = async function (req, res) {
         status: url.status,
         shortId: url.shortId,
         redirectUrl: url.redirectUrl,
-        visitHistory: url.visitHistory,
-        shortUrl: req.get('origin') + '/url/' + url.shortId
+        visitHistory: url.visitHistory
       };
     });
     res.render('links', { data });

@@ -1,6 +1,14 @@
 // console.clear();
 var SECRET_KEY = '@cce$$T0ken$ecretKey@1996';
 
+$(window).on('load', function () {
+  $('.link').each((i, el) => {
+    const shortId = $('input[name=shortId]')[i].defaultValue;
+    el.href = window.location.origin + '/url/' + shortId;
+    el.innerText = window.location.origin + '/url/' + shortId;
+  });
+});
+
 $('body').on('click', function (e) {
   const shortId = e.target?.nextSibling?.nextSibling?.defaultValue;
   if (shortId) {
