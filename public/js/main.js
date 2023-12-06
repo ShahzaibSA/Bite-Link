@@ -1,6 +1,22 @@
 // console.clear();
 var SECRET_KEY = '@cce$$T0ken$ecretKey@1996';
 
+$('body').on('click', function (e) {
+  const shortId = e.target?.nextSibling?.nextSibling?.defaultValue;
+  if (shortId) {
+    const linkEl = $(`.short-id-${shortId}`);
+    if (linkEl[0]?.href) {
+      linkEl.addClass('text-primary');
+      linkEl.text('Link Copied');
+      navigator.clipboard.writeText(linkEl[0].href);
+      setTimeout(() => {
+        linkEl.removeClass('text-primary');
+        linkEl.text(linkEl[0].href);
+      }, 2000);
+    }
+  }
+});
+
 const copyToClipboard = function () {
   const copyText = document.getElementById('short-url-link');
   // Copy the text inside the text field
@@ -126,43 +142,63 @@ const showNewGeneratedUrl = function (result) {
   showMessage('Your short link successfully generated.', 'success');
 };
 
+const blockSpecialChar = function (e) {
+  var k = e.keyCode;
+  var specialChar;
+  if (e.target.name == 'username')
+    specialChar = (k > 64 && k < 91) || (k > 94 && k < 123) || k == 8 || (k >= 48 && k <= 57);
+
+  if (e.target.name == 'fullName') specialChar = k == 32 || (k > 64 && k < 91) || (k > 96 && k < 123) || k == 8;
+
+  if (!specialChar) showMessage('Special characters and numbers are not allowed! ' + `"${e.key}"`);
+
+  return specialChar;
+};
 //! AJAX REQUEST
 
-$('.register-form').on('submit', function (e) {
+$('.register-form').on('submit', async function (e) {
   e.preventDefault();
   if ($('#pass').val().toLowerCase().includes('password')) {
     return showMessage('Password cannot contain "password"', 'error');
-  } else if ($('#pass').val().length < 7) {
+  }
+  if ($('#pass').val().length < 7) {
     return showMessage('Password must be minimum 5 characters!', 'error');
   }
   $('input[type="submit"]').attr('disabled', 'disabled');
   spinner.start();
-  $.ajax({
-    type: 'POST',
-    url: '/users',
-    data: $('form').serialize(),
-    success: function (result) {
-      spinner.stop();
-      $('input[type="submit"]').removeAttr('disabled', 'disabled');
-      showMessage('Your Account Sccessfully Created!', 'success');
-      setTimeout(() => {
-        window.location.href = result.redirectUrl;
-      }, 2500);
-    },
-    error: function (error) {
-      spinner.stop();
-      $('input[type="submit"]').removeAttr('disabled', 'disabled');
-      var errorMsg = error.responseText ? JSON.parse(error.responseText) : '';
-      if (errorMsg?.errors?.password) {
-        errorMsg = errorMsg.errors.password.message;
-      } else if (errorMsg?.code || errorMsg?.errors?.email) {
-        errorMsg = errorMsg.code ? 'Email already exists!' : 'Email is not valid!';
-      } else {
-        errorMsg = 'Something went wrong! Please try again later.';
+  try {
+    const response = await fetch('https://api.geoapify.com/v1/ipinfo?apiKey=1a4b6df0847e460b886172b3971eb66d');
+    const data = await response.json();
+    var country = data.city.name + ',' + ' ' + data.country.name;
+    $.ajax({
+      type: 'POST',
+      url: '/users',
+      data: $('form').serialize() + `&location=${country ? country : '-'}`,
+      success: function (result) {
+        spinner.stop();
+        $('input[type="submit"]').removeAttr('disabled', 'disabled');
+        showMessage('Your Account Sccessfully Created!', 'success');
+        setTimeout(() => {
+          window.location.href = result.redirectUrl;
+        }, 2500);
+      },
+      error: function (error) {
+        spinner.stop();
+        $('input[type="submit"]').removeAttr('disabled', 'disabled');
+        var errorMsg = error.responseText ? JSON.parse(error.responseText) : '';
+        if (errorMsg?.errors?.password) {
+          errorMsg = errorMsg.errors.password.message;
+        } else if (errorMsg?.code || errorMsg?.errors?.email) {
+          errorMsg = errorMsg.code ? 'Email already exists!' : 'Email is not valid!';
+        } else {
+          errorMsg = 'Something went wrong! Please try again later.';
+        }
+        showMessage(errorMsg, 'error');
       }
-      showMessage(errorMsg, 'error');
-    }
-  });
+    });
+  } catch (error) {
+    showMessage('Something went wrong!', 'error');
+  }
 });
 
 $('.login-form').on('submit', function (e) {

@@ -7,6 +7,7 @@ const { connectDB } = require('./db');
 const urlRoutes = require('./routes/urlRoutes');
 const userRoutes = require('./routes/userRoutes');
 const staticRoutes = require('./routes/staticRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const refreshTokenRoute = require('./routes/refreshTokenRoute');
 
 const port = process.env.PORT || 8000;
@@ -38,6 +39,8 @@ app.use('/', staticRoutes);
 app.use('/users', userRoutes);
 
 app.use('/url', urlRoutes);
+
+app.use('/dashboard', dashboardRoutes);
 
 app.use('/refresh', refreshTokenRoute);
 

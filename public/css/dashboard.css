@@ -1,0 +1,39 @@
+html {
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  background-image: linear-gradient(
+    to right top,
+    #fcd201,
+    #ccd52a,
+    #a0d44a,
+    #76cf67,
+    #4ec881,
+    #4ec881,
+    #4ec881,
+    #4ec881,
+    #76cf67,
+    #a0d44a,
+    #ccd52a,
+    #fcd201
+  );
+}
+
+.link-wrap {
+  width: 180px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.link-wrap a:hover {
+  transform: translateX(0%);
+  transition: all ease-in-out 0.3s;
+}
+
+.link:hover {
+  transform: translateX(0%);
+  transition: all ease-in-out 0.3s;
+}

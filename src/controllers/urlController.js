@@ -27,6 +27,8 @@ const handleRedirectUrl = async function (req, res) {
   if (!id || !shortid.isValid(id)) return res.status(400).send({ error: 'Please send vaild id!' });
 
   try {
+    const urlData = await Url.findOne({ shortId: id });
+    if (urlData.status == 'Offline') return res.render('linkOffline', { message: 'Link is offline.' });
     const result = await Url.findOneAndUpdate(
       { shortId: id },
       {

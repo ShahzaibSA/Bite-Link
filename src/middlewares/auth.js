@@ -27,13 +27,12 @@ const restrictToLoggedInUser = async function (req, res, next) {
     if (error) return res.redirect('/login');
     try {
       const user = await User.findOne({ email: decoded.email });
-      req.user = user;
+      req.user = user.toJSON();
       next();
     } catch (error) {
       res.status(500).send(error);
     }
   });
-  next();
 };
 
 module.exports = { verifyJWT, restrictToLoggedInUser };
