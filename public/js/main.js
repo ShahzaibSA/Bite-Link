@@ -193,8 +193,6 @@ const updateLinkHtml = function (data) {
   const redirectUrlDiv = linkRow.find('.link-wrap');
   const shortLinkText = linkRow.find('a.link');
 
-  console.log(shortLinkText);
-
   $('.message-div').css({
     backgroundColor: '#6efc64',
     borderRadius: '7px'
@@ -220,7 +218,7 @@ const updateLinkHtml = function (data) {
   }, 3100);
 };
 
-//  <<<<<<<<<<<<<<<<<<<<<<<     CALL TO API       >>>>>>>>>>>>>>>>>>>>>>>>>
+//  <<<<<<<<<<<<<<<<<<<<<<<     CALL TO API       >>>>>>>>>>>>>>>>>>>>>>>>
 
 const CallToApi = async function (method, endpoint, data) {
   const response = await $.ajax({
