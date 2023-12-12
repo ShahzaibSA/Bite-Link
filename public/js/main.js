@@ -1,4 +1,5 @@
-// console.clear();
+'use strict';
+
 var SECRET_KEY = '@cce$$T0ken$ecretKey@1996';
 
 $(window).on('load', function () {
@@ -22,6 +23,24 @@ $('body').on('click', function (e) {
         linkEl.text(linkEl[0].href);
       }, 2000);
     }
+  }
+});
+
+$('.edit-link-btn').on('click', function (e) {
+  const urlDataRow = $(e.target).parent().siblings('td');
+  if (urlDataRow) {
+    const shortId = urlDataRow[0].children[0].children[0].querySelector('input').value;
+    const redirectUrl = urlDataRow[1].children[0].innerText;
+    const status = urlDataRow[3].children[0].innerText?.toLowerCase();
+    const shortIdInputHtml = `<input id='urlShortId' type="hidden" value="${shortId}">`;
+    $('#shortIdInputDiv').empty().append(shortIdInputHtml);
+    $('#url').val(redirectUrl);
+
+    const selected = $('#linkStatus > option[selected=selected]');
+    if (selected) $(selected).removeAttr('selected');
+
+    const opt = $(`option[value=${status}]`)[0];
+    $(opt).attr('selected', 'selected');
   }
 });
 
@@ -162,7 +181,54 @@ const blockSpecialChar = function (e) {
 
   return specialChar;
 };
-//! AJAX REQUEST
+
+$('.close').click(function () {
+  $('.show').remove();
+});
+
+const updateLinkHtml = function (data) {
+  const shortId = $('#urlShortId').val();
+  const statusDiv = $(`.link-row-id-${shortId}`).find('.link-status');
+  const redirectUrlDiv = $(`.link-row-id-${shortId}`).find('.link-wrap');
+
+  $('.message-div').css({
+    backgroundColor: '#6efc64',
+    borderRadius: '7px'
+  });
+
+  showMessage('Link info updated!', 'success');
+
+  setTimeout(() => {
+    $('.modal').removeClass('show').css('display', 'none');
+    $('.fade').removeClass('modal-backdrop');
+
+    redirectUrlDiv[0].firstChild.href = data.redirectUrl;
+    redirectUrlDiv[0].firstChild.innerText = data.redirectUrl;
+    redirectUrlDiv.attr('data-bs-original-title', data.redirectUrl);
+
+    if (!data.status) {
+      statusDiv.addClass('bg-gradient-secondary').removeClass('bg-gradient-success').text('Offline');
+    } else {
+      statusDiv.addClass('bg-gradient-success').removeClass('bg-gradient-secondary').text('Running');
+    }
+  }, 3100);
+};
+
+//  <<<<<<<<<<<<<<<<<<<<<<<     CALL TO API       >>>>>>>>>>>>>>>>>>>>>>>>>
+
+const CallToApi = async function (method, endpoint, data) {
+  const response = await $.ajax({
+    type: method,
+    url: endpoint,
+    data: data,
+    beforeSend: setReqHeader,
+    success: (data) => data,
+    error: (error) => error
+  });
+  return response;
+};
+
+//! <<<<<<<<<<<<<<<<<<<<<<<     AJAX REQUEST      >>>>>>>>>>>>>>>>>>>>>>>>>>
 
 $('.register-form').on('submit', async function (e) {
   e.preventDefault();
@@ -308,6 +374,7 @@ $('.url-form').on('submit', function (e) {
           });
         } catch (error) {
           showMessage('Session Expired!', 'error');
+          deleteAccessToken();
           setTimeout(() => {
             location.replace('/login');
           }, 2500);
@@ -370,6 +437,90 @@ $('.analytics-form').on('submit', function (e) {
   });
 });
 
-$('.close').click(function () {
-  $('.show').remove();
+$('#saveLink').on('click', async function () {
+  const redirectUrl = $('#url').val();
+  const shortId = $('#urlShortId').val();
+  const status = $('#linkStatus').val() === 'running';
+
+  if (!validateUrl(redirectUrl)) {
+    $('.message-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
+    return showMessage('Url is not valid!', 'error');
+  }
+
+  spinner.start();
+  $('#saveLink, #deleteLink').attr('disabled', true);
+
+  try {
+    const response = await CallToApi('PATCH', '/url', { redirectUrl, shortId, status });
+
+    updateLinkHtml(response);
+  } catch (error) {
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      try {
+        const newAccessToken = await getNewAccessToken();
+
+        if (!newAccessToken) return location.replace('/login');
+
+        const response = await CallToApi('PATCH', '/url', { redirectUrl, shortId, status });
+
+        updateLinkHtml(response);
+      } catch (error) {
+        deleteAccessToken();
+        location.replace('/login');
+      }
+    } else {
+      $('.message-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
+      showMessage(error.responseJSON?.error, 'error');
+    }
+  } finally {
+    spinner.stop();
+    $('#saveLink, #deleteLink').removeAttr('disabled');
+  }
 });
+
+$('#deleteLink').on('click', async function () {
+  const shortId = $('#urlShortId').val();
+  const userConsent = confirm('Are you sure you want to delete this link?');
+  if (!shortId || !userConsent) return;
+
+  $('#deleteLink, #saveLink').attr('disabled', true);
+  spinner.start();
+
+  try {
+    const response = await CallToApi('DELETE', '/url', { shortId });
+    $('.message-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+    showMessage(response.message, 'success');
+    setTimeout(() => {
+      $('.modal').removeClass('show').css('display', 'none');
+      $('.fade').removeClass('modal-backdrop');
+      $(`.link-row-id-${shortId}`).remove();
+    }, 3100);
+  } catch (error) {
+    handleDeleteError(error, shortId);
+  } finally {
+    spinner.stop();
+    $('#deleteLink, #saveLink').removeAttr('disabled');
+  }
+});
+
+const handleDeleteError = async function (error, shortId) {
+  if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+    try {
+      const newAccessToken = await getNewAccessToken();
+      if (!newAccessToken) return location.replace('/login');
+      const response = await CallToApi('DELETE', '/url', { shortId });
+      $('.message-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+      showMessage(response.message, 'success');
+      setTimeout(() => {
+        $('.modal').removeClass('show').css('display', 'none');
+        $('.fade').removeClass('modal-backdrop');
+        $(`.link-row-id-${shortId}`).remove();
+      }, 3100);
+    } catch (error) {
+      deleteAccessToken();
+      location.replace('/login');
+    }
+  } else {
+    showMessage(error.responseJSON?.error, 'error');
+  }
+};

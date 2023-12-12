@@ -28,7 +28,7 @@ const handleRedirectUrl = async function (req, res) {
 
   try {
     const urlData = await Url.findOne({ shortId: id });
-    if (urlData.status == 'Offline') return res.render('linkOffline', { message: 'Link is offline.' });
+    if (!urlData.status) return res.render('linkOffline', { message: 'Link is offline.' });
     const result = await Url.findOneAndUpdate(
       { shortId: id },
       {
@@ -48,26 +48,32 @@ const handleRedirectUrl = async function (req, res) {
 };
 
 const handleGetAnalytics = async function (req, res) {
-  const id = req.query.id;
+  const { id } = req.query;
+  const { _id: createdBy } = req.user;
+
   if (!id) {
-    return res.status(404).send({ error: 'Url is not valid!' });
+    return res.status(404).send({ error: 'URL is not valid!' });
   }
 
   try {
-    const result = await Url.findOne({ shortId: id, createdBy: req.user._id });
-    if (!result) return res.status(404).send({ error: 'Url is not correct!' });
+    const result = await Url.findOne({ shortId: id, createdBy });
+    if (!result) {
+      return res.status(404).send({ error: 'URL is not correct!' });
+    }
 
-    if (!result.visitHistory.length) return res.status(404).send({ error: 'No Data Found!' });
+    if (!result.visitHistory.length) {
+      return res.status(404).send({ error: 'No data found!' });
+    }
 
-    var clickHistory = result.visitHistory.map((history) => {
-      return {
-        date: new Date(history.timestamp).toString().split('GMT')[0],
-        ipAddress: history.ipAddress
-      };
+    const clickHistory = result.visitHistory.map((history) => {
+      const date = new Date(history.timestamp).toString().split('GMT')[0];
+      const { ipAddress } = history;
+      return { date, ipAddress };
     });
+
     return res.send({
       totalClicks: result.visitHistory.length,
-      clickHistory: clickHistory,
+      clickHistory,
       redirectUrl: result.redirectUrl,
       shortId: result.shortId
     });
@@ -76,8 +82,40 @@ const handleGetAnalytics = async function (req, res) {
   }
 };
 
+const handleUpdateLink = async function name(req, res) {
+  const updates = Object.keys(req.body).filter((key) => key !== 'shortId');
+  const allowedUpdates = ['redirectUrl', 'status'];
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' });
+
+  try {
+    const result = await Url.findOne({ createdBy: req.user._id, shortId: req.body.shortId });
+    if (!result) return res.status(404).send({ error: 'Link not found' });
+
+    updates.forEach((update) => (result[update] = req.body[update]));
+    await result.save();
+    res.send({ status: result.status, redirectUrl: result.redirectUrl });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const handleDeleteLink = async function (req, res) {
+  const { shortId } = req.body;
+  if (!shortId) return res.status(404).send({ error: 'Please provide short id!' });
+  try {
+    const result = await Url.findOneAndDelete({ shortId, createdBy: req.user._id });
+    if (!result) return res.status(404).send({ error: 'Link not found' });
+    res.json({ message: 'Link Deleted' });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   handleGenerateShortUrl: handleGenerateShortUrl,
+  handleUpdateLink: handleUpdateLink,
+  handleDeleteLink: handleDeleteLink,
   handleRedirectUrl: handleRedirectUrl,
   handleGetAnalytics: handleGetAnalytics
 };

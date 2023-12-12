@@ -12,8 +12,8 @@ const urlSchema = new mongoose.Schema(
       required: true
     },
     status: {
-      type: String,
-      default: 'running'
+      type: Boolean,
+      default: true
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
