@@ -225,10 +225,10 @@
                             <span class="text-secondary text-xs font-weight-bold"><%= d.visitHistory.length %></span>
                           </td>
                           <td class="align-middle text-center text-sm">
-                            <% if (!d.status) { %>
-                              <span class="badge badge-sm bg-gradient-secondary link-status">Offline</span>
-                            <%} else { %>
+                            <% if (d.status) { %>
                               <span class="badge badge-sm bg-gradient-success link-status">Running</span>
+                            <%} else { %>
+                              <span class="badge badge-sm bg-gradient-secondary link-status">Offline</span>
                             <% } %>
   
                           </td>
