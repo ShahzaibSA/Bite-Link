@@ -188,8 +188,12 @@ $('.close').click(function () {
 
 const updateLinkHtml = function (data) {
   const shortId = $('#urlShortId').val();
-  const statusDiv = $(`.link-row-id-${shortId}`).find('.link-status');
-  const redirectUrlDiv = $(`.link-row-id-${shortId}`).find('.link-wrap');
+  const linkRow = $(`.link-row-id-${shortId}`);
+  const statusDiv = linkRow.find('.link-status');
+  const redirectUrlDiv = linkRow.find('.link-wrap');
+  const shortLinkText = linkRow.find('a.link');
+
+  console.log(shortLinkText);
 
   $('.message-div').css({
     backgroundColor: '#6efc64',
@@ -208,8 +212,10 @@ const updateLinkHtml = function (data) {
 
     if (!data.status) {
       statusDiv.addClass('bg-gradient-secondary').removeClass('bg-gradient-success').text('Offline');
+      shortLinkText.removeClass('text-dark').addClass('text-secondary');
     } else {
       statusDiv.addClass('bg-gradient-success').removeClass('bg-gradient-secondary').text('Running');
+      shortLinkText.addClass('text-dark');
     }
   }, 3100);
 };
