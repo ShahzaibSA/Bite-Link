@@ -12,13 +12,9 @@ const handleGenerateShortUrl = async function (req, res) {
       redirectUrl: body.url,
       createdBy: req.user._id
     });
-    // return res.render('index', {
-    //   id: result.shortId
-    // });
     return res.send({ id: result.shortId });
   } catch (error) {
-    res.status(400).send({ error });
-    // res.status(500).send(error);
+    res.status(400).send(error);
   }
 };
 
@@ -106,7 +102,7 @@ const handleDeleteLink = async function (req, res) {
   try {
     const result = await Url.findOneAndDelete({ shortId, createdBy: req.user._id });
     if (!result) return res.status(404).send({ error: 'Link not found' });
-    res.json({ message: 'Link Deleted' });
+    res.send({ message: 'Link Deleted' });
   } catch (error) {
     res.status(500).send(error);
   }

@@ -5,6 +5,49 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Profile</title>
+  <style>
+    #loader {
+      border: 12px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 12px solid #444444;
+      width: 70px;
+      height: 70px;
+      animation: spin 1s linear infinite;
+    }
+    .center {
+      position: absolute;
+      z-index: 9999;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+    @keyframes spin {
+      100% {
+          transform: rotate(360deg);
+      }
+    }
+  </style>
+  <script>
+      document.onreadystatechange = function () {
+        var body = document.querySelector("body");
+        var sidebar = document.querySelector("aside");
+        var mainDiv = document.querySelector(".main-content");
+        var loader = document.querySelector("#loader");
+        if (document.readyState !== "complete") {
+          sidebar.style.opacity = 0.3;
+          mainDiv.style.opacity = 0.3;
+          body.style.visibility = "hidden";
+          loader.style.visibility = "visible";
+        } else {
+          sidebar.style.opacity = 1;
+          mainDiv.style.opacity = 1;
+          loader.style.display = "none";
+          body.style.visibility = "visible";
+        }
+      };
+  </script>
   <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -23,6 +66,7 @@
 </head>
 
 <body style='background-color: #1abc9c;' class="g-sidenav-show">
+  <div id="loader" class="center"></div>
   <aside
       class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark"
       id="sidenav-main"
@@ -97,6 +141,9 @@
       </div>
   </aside>
   <div class="main-content position-relative max-height-vh-100 h-100">
+    <div class="spinner d-none" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
     <!-- Navbar -->
       <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
         <div class="container-fluid py-1 px-3">

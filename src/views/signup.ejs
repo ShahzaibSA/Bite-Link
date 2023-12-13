@@ -22,6 +22,9 @@
     <script src="/js/main.js" defer></script>
   </head>
   <body class="html-body">
+    <div class="spinner d-none" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
     <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
       <div>
         <img src="/assets/img/logo.svg" alt="logo" />
@@ -29,7 +32,7 @@
       </div>
     </nav>
     <div class="body-container">
-      <!-- Sing in  Form -->
+      <!-- Sign up  Form -->
       <section class="sign-up">
         <div class="message-div"></div>
         <div class="container">
@@ -72,9 +75,6 @@
                 <div class="d-flex d-inline">
                   <div class="form-group form-button">
                     <input type="submit" name="signup" id="signup" class="form-submit" value="Register" />
-                  </div>
-                  <div class="spinner-div d-none" style="margin-top: 36px; margin-left: 20px" role="status">
-                    <span class="sr-only">Loading...</span>
                   </div>
                 </div>
               </form>

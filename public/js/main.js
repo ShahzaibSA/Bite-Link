@@ -104,12 +104,10 @@ const validateUrl = function (url) {
 
 const spinner = {
   start: function (type) {
-    $(`.spinner-${type ? type : 'div'}`).removeClass('d-none');
-    $(`.spinner-${type ? type : 'div'}`).addClass('spinner-border');
+    $('.spinner').removeClass('d-none').addClass('spinner-show').addClass('body-bg');
   },
   stop: function (type) {
-    $(`.spinner-${type ? type : 'div'}`).addClass('d-none');
-    $(`.spinner-${type ? type : 'div'}`).removeClass('spinner-border');
+    $('.spinner').addClass('d-none').removeClass('spinner-show').removeClass('body-bg');
   }
 };
 
@@ -305,7 +303,7 @@ $('.login-form').on('submit', function (e) {
 });
 
 $('.logout-btn').click(function () {
-  spinner.start('center');
+  spinner.start();
   $.ajax({
     type: 'POST',
     url: '/users/logout',
