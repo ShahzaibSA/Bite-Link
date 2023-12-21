@@ -7,13 +7,13 @@ const verifyJWT = (req, res, next) => {
   const accessToken = authHeader.split(' ')[1];
 
   jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (error, decoded) => {
-    if (error) return res.status(403).send({ error: 'EXPIRED_TOKEN' });
+    if (error) return res.status(403).json({ error: 'EXPIRED_TOKEN' });
     try {
-      const user = await User.findOne({ email: decoded.email });
+      const user = await User.findOne({ _id: decoded.uid });
       req.user = user;
       next();
     } catch (error) {
-      res.status(500).send(error);
+      res.status(500).send({ error: 'Authentication Failed' });
     }
   });
 };
@@ -26,11 +26,11 @@ const restrictToLoggedInUser = async function (req, res, next) {
   jwt.verify(jwtToken, process.env.JWT_TOKEN_SECRET, async (error, decoded) => {
     if (error) return res.redirect('/login');
     try {
-      const user = await User.findOne({ email: decoded.email });
+      const user = await User.findOne({ _id: decoded.uid });
       req.user = user.toJSON();
       next();
     } catch (error) {
-      res.status(500).send(error);
+      res.status(500).send({ error: 'Authentication Failed' });
     }
   });
 };

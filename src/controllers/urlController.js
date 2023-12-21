@@ -14,7 +14,7 @@ const handleGenerateShortUrl = async function (req, res) {
     });
     return res.send({ id: result.shortId });
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({ error: 'Something went wrong!' });
   }
 };
 

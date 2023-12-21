@@ -13,7 +13,7 @@ const hanleRefreshToken = async function (req, res) {
     //! Reuse of Token;
     if (!foundUser) {
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-      if (!decoded) return res.sendStatus(403);
+      if (!decoded) return res.status(403).send({ error: 'Something went wrong' });
       const hackedUser = await User.findOne({ _id: decoded.uid });
       hackedUser.refreshTokens = [];
       await hackedUser.save();
@@ -32,7 +32,7 @@ const hanleRefreshToken = async function (req, res) {
       }
       if (decoded.uid !== foundUser._id.toString()) return res.status(403).send({ error: 'INVALID_TOKEN' });
 
-      const newAccessToken = generateToken(foundUser.email, 'AT', '10m');
+      const newAccessToken = generateToken(foundUser._id.toString(), 'AT', '30m');
       const newRefreshToken = generateToken(decoded.uid, 'RT', '1d');
 
       foundUser.refreshTokens = [...newRefreshTokensArr, { refreshToken: newRefreshToken }];

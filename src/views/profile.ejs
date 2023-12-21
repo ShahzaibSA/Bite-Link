@@ -141,6 +141,9 @@
       </div>
   </aside>
   <div class="main-content position-relative max-height-vh-100 h-100">
+     <div class="goodbye-div d-none" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
     <div class="spinner d-none" role="status">
       <span class="sr-only">Loading...</span>
     </div>
@@ -163,20 +166,108 @@
         </div>
       </nav>
     <!-- End Navbar -->
+    <div class="acc-del-msg-div px-4"></div>
     <div class="container-fluid px-2 px-md-4">
+      <!--Modal: Profile Edit -->
+    <div class="modal fade" id="modalEditProfile" tabindex="-1" role="dialog" aria-labelledby="modalEditProfile" aria-hidden="true">
+      <div class="modal-dialog modal-notify modal-primary" style="max-width: 28%;" role="document">
+        <!--Content-->
+        <div class="modal-content text-center">
+          <!--Header-->
+          <div class="modal-header">
+            <h5 class="text-primary" id="myModalLabel">Profile Edit</h5>
+            <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+              <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+            </button>
+          </div>
+  
+          <!--Body-->
+          <div class="modal-body">
+            <form id='picture-form' enctype="multipart/form-data">
+              <div class="form-group mb-2">
+                <span>
+                  <% if (data.avatar.url && data.avatar.public_id) { %>
+                    <img src="<%- data.avatar.url  %>" class="avatar-img avatar-md me-3 border-radius-lg" alt="profile-picture" />
+                  <%} else { %>
+                    <img src="https://img.icons8.com/stickers/100/user.png" class="avatar-img avatar-md me-3 border-radius-lg" alt="profile-picture" />
+                  <% } %>
+                </span>
+                <span class='d-flex'>
+                  <!-- <input type="file" id="pictureField" name="fileInput" class="form-field" style='background-color: #eef5ff; border: none;'> -->
+                  <input type="file" id="pictureField" name="avatar" accept="image/*" class="form-field" style='background-color: #eef5ff; border: none;'>
+                </span>
+              </div>
+              <div class="form-group d-flex form-button">
+                <button type='submit' id='upload-picture-btn' style='margin-right: 7px;' class="d-none btn btn-dark waves-effect">Upload</button>
+                <% if (data.avatar.url && data.avatar.public_id) { %>
+                  <button type='click' id='delete-picture-btn' class="btn bg-danger text-white waves-effect">Delete</button>
+                <% } %>
+              </div>
+            </form>
+            <div class="form-group">
+              <span style='padding-right: 40px;'>Email</span>
+              <input 
+              value='<%= data.email %>'
+                required 
+                type="email" 
+                name='email' 
+                class="form-field" 
+                autocomplete='off'
+                placeholder="Email" >
+            </div>
+            <div class="form-group my-3">
+              <span>Full Name</span>
+              <input 
+              value='<%= data.fullName %>'
+                required 
+                type="text" 
+                name='fullName' 
+                autocomplete='off' 
+                class="form-field" 
+                placeholder="full name" 
+                onkeypress="return blockSpecialChar(event)">
+            </div>
+            <div class="form-group my-3">
+              <span>Username</span>
+              <input 
+              value='<%= data.username %>'
+                required 
+                type="text" 
+                autocomplete='off' 
+                name='username' 
+                class="form-field" 
+                placeholder="username" 
+                onkeypress="return blockSpecialChar(event)">
+            </div>
+          </div>
+  
+          <!--Footer-->
+          <div class="modal-footer flex-center">
+            <!-- <button type='submit' form='picture-form' id='upload-picture-btn' class="d-none btn btn-dark waves-effect">Upload</button> -->
+            <button type='button' id='save-profile-btn' class="btn btn-dark waves-effect">Save</button>
+          </div>
+          <div class="message-div"></div>
+        </div>
+        <!--/.Content-->
+      </div>
+    </div>
       <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
         <span class="mask  bg-gradient-primary  opacity-6"></span>
       </div>
       <div class="card card-body mx-3 mx-md-4 mt-n6">
         <div class="row gx-4 mb-2">
           <div class="col-auto">
-            <div class="avatar avatar-xl position-relative">
-              <img width="120" height="120" src="https://img.icons8.com/stickers/100/user.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1" />
+            <div class="avatar avatar-xl position-relative">  
+              <% if (data.avatar.url && data.avatar.public_id) { %>
+                <img width="120" height="120" src="<%- data.avatar.url %>" class="avatar-img avatar avatar-sm me-3 border-radius-lg" alt="user1" />
+              <%} else { %>
+                 <img width="120" height="120" src="https://img.icons8.com/stickers/100/user.png" class="avatar-img avatar avatar-sm me-3 border-radius-lg" alt="user1" />
+              <% } %>
             </div>
           </div>
           <div class="col-auto my-auto">
             <div class="h-100">
-              <h5 class="mb-1 text-capitalize"><%= data.fullName %></h5>
+              <h5 class="mb-1 text-capitalize fullName"><%= data.fullName %></h5>
             </div>
           </div>
         </div>
@@ -190,7 +281,7 @@
                       <h6 class="mb-0">Profile Information</h6>
                     </div>
                     <div class="col-md-4 text-end">
-                      <a href="javascript:;">
+                      <a type='button' id='update-profile-btn' data-toggle="modal" data-target="#modalEditProfile">
                         <i class="fas fa-user-edit text-secondary text-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Profile"></i>
                       </a>
                     </div>
@@ -199,10 +290,11 @@
                 <div class="card-body p-3 mt-2">
                   <!-- <hr class="horizontal gray-light my-4"> -->
                   <ul class="list-group">
-                    <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Username:</strong> &nbsp; <%= data.username %></li>
+                    <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Username:</strong> <span class='username'>&nbsp; <%= data.username %></span></li>
                     <!-- <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Mobile:</strong> &nbsp; (44) 123 1234 123</li> -->
-                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> &nbsp; <%= data.email %></li>
+                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> <span class="email">&nbsp; <%= data.email %></span></li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Location:</strong> &nbsp; <%= data.location %></li>
+                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Joined:</strong> &nbsp; <%= data.joined %></li>
                   </ul>
                 </div>
               </div>
@@ -258,6 +350,31 @@
                 </div>
               </div>
             </div>
+            <div class="col-12 col-xl-4">
+              <div class="card card-plain h-100">
+                <div class="card-header pb-0 p-3">
+                  <h6 class="mb-0" style='color: rgb(255, 67, 67) !important;'>Account Deletion</h6>
+                </div>
+                <div class="card-body p-3">
+                  <h6 class="text-uppercase text-body text-xs font-weight-bolder"
+                  >Delete this account.</h6>
+                  <form id='delete-profile-form'>
+                    <label class='text-dark' for="password">Passwrod</label>
+                    <div class="d-flex">
+                      <input
+                        required 
+                        type="password" 
+                        name='acc-del-pass' 
+                        class="form-field w-60"
+                        placeholder="Passwrod"
+                        style='height: 40px; margin-right: 10px;' >
+                      <button type='submit' class="btn bg-danger text-white waves-effect">Delete</button>
+                    </div>
+                    <small class="form-text text-muted">Enter your password to delete this account.</small>
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -308,6 +425,8 @@
   <script src="/js/material-dashboard.min.js?v=3.1.0"></script>
   <!-- Jquery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
    <!-- Crypto Js -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"

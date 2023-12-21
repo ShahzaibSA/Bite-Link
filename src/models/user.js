@@ -28,6 +28,16 @@ const userSchema = new mongoose.Schema(
     location: {
       type: String
     },
+    avatar: {
+      url: {
+        type: String,
+        default: null
+        // default: 'https://img.icons8.com/stickers/100/user.png'
+      },
+      public_id: {
+        type: String
+      }
+    },
     password: {
       type: String,
       required: true,

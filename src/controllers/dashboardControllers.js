@@ -7,7 +7,7 @@ const handleDashboard = async function (req, res) {
     var runningLinks = 0;
     const data = urls.map((url) => {
       totalClicks += url.visitHistory.length;
-      if (url.status == 'running') runningLinks++;
+      if (url.status) runningLinks++;
       return {
         redirectUrl: url.redirectUrl,
         visitHistory: url.visitHistory,
@@ -42,6 +42,9 @@ const handleUrlsData = async function (req, res) {
 };
 
 const handleProfile = function (req, res) {
+  var date = req.user.createdAt.toString().split(' ');
+  date = date[0] + ' ' + date[1] + ' ' + date[2] + ' ' + date[3] + ' ' + date[4];
+  req.user.joined = date;
   res.render('profile', { data: req.user });
   // try {
   //   res.render('profile');
