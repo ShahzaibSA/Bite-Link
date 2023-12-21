@@ -83,11 +83,13 @@ const handlelogoutUser = async function (req, res) {
 
 const handlelogoutAllUsers = async function (req, res) {
   try {
-    req.user.refreshTokens = [];
+    // req.user.refreshTokens = [];
+    // await req.user.save();
+    // res.clearCookie('jwt');
+    // res.clearCookie('refreshToken');
+    req.user.refreshTokens = req.user.refreshTokens.filter((rts) => rts.refreshToken === req.cookies.refreshToken);
     await req.user.save();
-    res.clearCookie('jwt');
-    res.clearCookie('refreshToken');
-    return res.redirect('/login');
+    res.send({ message: 'Successfully logout all other devices' });
   } catch (error) {
     res.status(500).send(error);
   }

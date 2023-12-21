@@ -17,7 +17,9 @@ const hanleRefreshToken = async function (req, res) {
       const hackedUser = await User.findOne({ _id: decoded.uid });
       hackedUser.refreshTokens = [];
       await hackedUser.save();
-      return res.status(403).send({ error: 'USED_TOKEN' });
+      res.clearCookie('jwt');
+      return res.redirect('/login');
+      // return res.status(403).send({ error: 'USED_TOKEN' });
     }
 
     const newRefreshTokensArr = foundUser.refreshTokens.filter((rts) => rts.refreshToken !== refreshToken);

@@ -1,73 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Links</title>
-  <style>
-    #loader {
-      border: 12px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 12px solid #444444;
-      width: 70px;
-      height: 70px;
-      animation: spin 1s linear infinite;
-    }
-    .center {
-      position: absolute;
-      z-index: 9999;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: auto;
-    }
-    @keyframes spin {
-      100% {
-          transform: rotate(360deg);
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Links</title>
+    <style>
+      #loader {
+        border: 12px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 12px solid #444444;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
       }
-    }
-  </style>
-  <script>
+      .center {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
       document.onreadystatechange = function () {
-        var body = document.querySelector("body");
-        var sidebar = document.querySelector("aside");
-        var mainDiv = document.querySelector("main");
-        var loader = document.querySelector("#loader");
-        if (document.readyState !== "complete") {
+        var body = document.querySelector('body');
+        var sidebar = document.querySelector('aside');
+        var mainDiv = document.querySelector('main');
+        var loader = document.querySelector('#loader');
+        if (document.readyState !== 'complete') {
           sidebar.style.opacity = 0.3;
           mainDiv.style.opacity = 0.3;
-          body.style.visibility = "hidden";
-          loader.style.visibility = "visible";
+          body.style.visibility = 'hidden';
+          loader.style.visibility = 'visible';
         } else {
           sidebar.style.opacity = 1;
           mainDiv.style.opacity = 1;
-          loader.style.display = "none";
-          body.style.visibility = "visible";
+          loader.style.display = 'none';
+          body.style.visibility = 'visible';
         }
       };
-  </script>
-  <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
-  <!-- Nucleo Icons -->
-  <link href="/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link id="pagestyle" href="/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
-  <link id="pagestyle" href="/css/dashboard.css" rel="stylesheet" />
-  <!-- APP JS -->
-  <script src="/js/main.js" defer></script>
-</head>
+    </script>
+    <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
+    <!--     Fonts and icons     -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700"
+    />
+    <!-- Nucleo Icons -->
+    <link href="/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+    <link id="pagestyle" href="/css/dashboard.css" rel="stylesheet" />
+    <!-- APP JS -->
+    <script src="/js/main.js" defer></script>
+  </head>
 
-<body class="g-sidenav-show">
-  <div id="loader" class="center"></div>
-  <aside
+  <body class="g-sidenav-show">
+    <div id="loader" class="center"></div>
+    <aside
       class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark"
       id="sidenav-main"
     >
@@ -132,76 +135,97 @@
       </div>
       <div class="sidenav-footer position-absolute w-100 bottom-0">
         <div class="mx-3">
+          <a class="logout-btn btn btn-outline-primary w-100" type="button">Logout</a>
+        </div>
+        <div class="mx-3 pb-3">
           <a
-            class="logout-btn btn btn-outline-primary mt-4 w-100"
-            href="#"
+            style="top: 10px"
+            class="logout-all-btn btn bg-gradient-dark btn-outline-primary waves-effect w-100"
             type="button"
-            >Logout</a
+            >Logout All Devices</a
           >
+          <small class="text-muted mx-1">Logut from all other devices.</small>
+        </div>
       </div>
-  </aside>
-  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <div class="spinner d-none" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <!--Modal: modalEditLink-->
-    <div class="modal fade" id="modalEditLink" tabindex="-1" role="dialog" aria-labelledby="modalEditLink" aria-hidden="true">
-      <div id='shortIdInputDiv'></div>
-      <div class="modal-dialog modal-md modal-notify modal-primary" role="document">
-        <!--Content-->
-        <div class="modal-content text-center">
-          <!--Header-->
-          <div class="modal-header">
-            <h5 class="text-primary" id="myModalLabel">Link Edit</h5>
-            <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
-              <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-            </button>
-          </div>
-  
-          <!--Body-->
-          <div class="modal-body">
-            <div class="form-group">
-              <span>
-                <img src="/assets/img/link.png" class="avatar-xs me-3 border-radius-lg link-logo" alt="link"/>
-              </span>
-              <input class="form-field" id='url' type="url" placeholder="https://example.com">
+    </aside>
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+      <div class="spinner d-none" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <!--Modal: modalEditLink-->
+      <div
+        class="modal fade"
+        id="modalEditLink"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="modalEditLink"
+        aria-hidden="true"
+      >
+        <div id="shortIdInputDiv"></div>
+        <div class="modal-dialog modal-md modal-notify modal-primary" role="document">
+          <!--Content-->
+          <div class="modal-content text-center">
+            <!--Header-->
+            <div class="modal-header">
+              <h5 class="text-primary" id="myModalLabel">Link Edit</h5>
+              <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+                  <path
+                    d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+                  />
+                </svg>
+              </button>
             </div>
 
-            <div class="mt-3 ps-0">
-              <div style='float: left;'>
-                <label class="form-check-label text-dark text-md" for="flexSwitchCheckDefault">Link Status</label>
+            <!--Body-->
+            <div class="modal-body">
+              <div class="form-group">
+                <span>
+                  <img src="/assets/img/link.png" class="avatar-xs me-3 border-radius-lg link-logo" alt="link" />
+                </span>
+                <input class="form-field" id="url" type="url" placeholder="https://example.com" />
               </div>
-              <div style='float: right;'>
-                <select class="ms-auto mt-1" id="linkStatus" >
-                  <option value="running">Running</option>
-                  <option value="offline">Offline</option>
-                </select>
-              </div>                                                        
-             <!-- <select class="ms-auto mt-1" id="linkSwitch" >Disable</select> -->
-             <!-- <input class="ms-auto mt-1" type='checkbox' id="linkSwitch" /> -->
+
+              <div class="mt-3 ps-0">
+                <div style="float: left">
+                  <label class="form-check-label text-dark text-md" for="flexSwitchCheckDefault"
+                    >Link Status</label
+                  >
+                </div>
+                <div style="float: right">
+                  <select class="ms-auto mt-1" id="linkStatus">
+                    <option value="running">Running</option>
+                    <option value="offline">Offline</option>
+                  </select>
+                </div>
+                <!-- <select class="ms-auto mt-1" id="linkSwitch" >Disable</select> -->
+                <!-- <input class="ms-auto mt-1" type='checkbox' id="linkSwitch" /> -->
+              </div>
             </div>
-          </div>
-  
-          <!--Footer-->
-          <div class="modal-footer flex-center">
-            <div class="spinner-div d-none mb-3 mx-2" style='color: #f44335;' role="status">
-              <span class="sr-only">Loading...</span>
+
+            <!--Footer-->
+            <div class="modal-footer flex-center">
+              <div class="spinner-div d-none mb-3 mx-2" style="color: #f44335" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <button type="button" id="update-link-btn" class="btn btn-danger waves-effect">Save</button>
+              <button type="button" id="delete-link-btn" class="btn btn-outline-danger">Delete Link</button>
             </div>
-            <button type='button' id='update-link-btn' class="btn btn-danger waves-effect">Save</button>
-            <button type='button' id='delete-link-btn' class="btn btn-outline-danger">Delete Link</button>
+            <div class="message-div"></div>
           </div>
-          <div class="message-div"></div>
+          <!--/.Content-->
         </div>
-        <!--/.Content-->
       </div>
-    </div>
-    <!-- Navbar -->
-      <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+      <!-- Navbar -->
+      <nav
+        class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl"
+        id="navbarBlur"
+        data-scroll="true"
+      >
         <div class="container-fluid py-1 px-3">
           <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            </div>
-            <ul class="navbar-nav  justify-content-end">
+            <div class="ms-md-auto pe-md-3 d-flex align-items-center"></div>
+            <ul class="navbar-nav justify-content-end">
               <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                 <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
                   <div class="sidenav-toggler-inner">
@@ -215,13 +239,14 @@
           </div>
         </div>
       </nav>
-    <!-- End Navbar -->
-    <div class="container-fluid py-4">
-      <% if (!data.length) { %>
-        <div class="d-flex align-items-center justify-content-center" style="height: 590px;">
-          <img width='600' height='600' class='img-fluid' src="/assets/img/no-links.png" alt="no-links">
+      <!-- End Navbar -->
+      <div class="container-fluid py-4">
+        <!-- <div class="message-div px-4"></div> -->
+        <% if (!data.length) { %>
+        <div class="d-flex align-items-center justify-content-center" style="height: 590px">
+          <img width="600" height="600" class="img-fluid" src="/assets/img/no-links.png" alt="no-links" />
         </div>
-      <%} else { %>
+        <%} else { %>
         <div class="row">
           <div class="col-12">
             <div class="card my-4">
@@ -239,60 +264,90 @@
                     <thead>
                       <tr>
                         <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-9">Link</th>
-                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-9 ps-2">Original Link</th>
-                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-9">Clicks</th>
-                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-9">Status</th>
-                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-9">Created At</th>
+                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-9 ps-2">
+                          Original Link
+                        </th>
+                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-9">
+                          Clicks
+                        </th>
+                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-9">
+                          Status
+                        </th>
+                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-9">
+                          Created At
+                        </th>
                         <th class="text-secondary opacity-7"></th>
                       </tr>
                     </thead>
                     <tbody>
                       <% data.forEach((d,i) => { %>
-                        <tr class="link-row-id-<%- d.shortId %>">
-                          <td class='link-logo-data'>
-                            <div class="d-flex px-2 py-1">
-                              <div>
-                                <img src="/assets/img/link.png" class="avatar-md me-3 border-radius-lg link-logo" data-bs-toggle="tooltip" data-bs-placement="top" title='Copy link' alt="link"/>
-                                <input type="hidden" name="shortId" value='<%- d.shortId %>'> 
-                              </div>
-                              <div class="d-flex flex-column justify-content-center">
-                                <h6 class="mb-0 text-sm" data-bs-toggle="tooltip" data-bs-placement="top" title='Click to open in new tab'>
-                                <% if (!d.status) { %>
-                                  <a class='link short-id-<%- d.shortId %> text-secondary' target='_blank'>Loading</a>
-                                <%} else { %>
-                                  <a class='link short-id-<%- d.shortId %>' target='_blank'>Loading</a>
-                                <% } %>
-                                </h6>
-                              </div>
+                      <tr class="link-row-id-<%- d.shortId %>">
+                        <td class="link-logo-data">
+                          <div class="d-flex px-2 py-1">
+                            <div>
+                              <img
+                                src="/assets/img/link.png"
+                                class="avatar-md me-3 border-radius-lg link-logo"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="Copy link"
+                                alt="link"
+                              />
+                              <input type="hidden" name="shortId" value="<%- d.shortId %>" />
                             </div>
-                          </td>
-                          <td class='original-link'>
-                            <p class="link-wrap text-xs font-weight-bold mb-0" 
-                              data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="<%= d.redirectUrl %>"
-                              ><a target='_blank' href="<%= d.redirectUrl %>"><%= d.redirectUrl %></a></p>
-                          </td>
-                           <td class="align-middle text-center">
-                            <span class="text-secondary text-xs font-weight-bold"><%= d.visitHistory.length %></span>
-                          </td>
-                          <td class="align-middle text-center text-sm">
-                            <% if (d.status) { %>
-                              <span class="badge badge-sm bg-gradient-success link-status">Running</span>
-                            <%} else { %>
-                              <span class="badge badge-sm bg-gradient-secondary link-status">Offline</span>
-                            <% } %>
-  
-                          </td>
-                          <td class="align-middle text-center">
-                            <!-- <span class="text-secondary text-xs font-weight-bold">23/04/18</span> -->
-                            <span class="text-secondary text-xs font-weight-bold"><%= d.createdAt %></span>
-                          </td> 
-                          <td class="align-middle">
-                            <button type="button" class="edit-link-btn btn my-2 text-secondary text-xs" data-toggle="modal" data-target="#modalEditLink">
-                              Edit
-                            </button>
-                          </td>
-                        </tr>
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6
+                                class="mb-0 text-sm"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="Click to open in new tab"
+                              >
+                                <% if (!d.status) { %>
+                                <a class="link short-id-<%- d.shortId %> text-secondary" target="_blank"
+                                  >Loading</a
+                                >
+                                <%} else { %>
+                                <a class="link short-id-<%- d.shortId %>" target="_blank">Loading</a>
+                                <% } %>
+                              </h6>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="original-link">
+                          <p
+                            class="link-wrap text-xs font-weight-bold mb-0"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="<%= d.redirectUrl %>"
+                          >
+                            <a target="_blank" href="<%= d.redirectUrl %>"><%= d.redirectUrl %></a>
+                          </p>
+                        </td>
+                        <td class="align-middle text-center">
+                          <span class="text-secondary text-xs font-weight-bold"><%= d.visitHistory.length %></span>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                          <% if (d.status) { %>
+                          <span class="badge badge-sm bg-gradient-success link-status">Running</span>
+                          <%} else { %>
+                          <span class="badge badge-sm bg-gradient-secondary link-status">Offline</span>
+                          <% } %>
+                        </td>
+                        <td class="align-middle text-center">
+                          <!-- <span class="text-secondary text-xs font-weight-bold">23/04/18</span> -->
+                          <span class="text-secondary text-xs font-weight-bold"><%= d.createdAt %></span>
+                        </td>
+                        <td class="align-middle">
+                          <button
+                            type="button"
+                            class="edit-link-btn btn my-2 text-secondary text-xs"
+                            data-toggle="modal"
+                            data-target="#modalEditLink"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
                       <% }) %>
                     </tbody>
                   </table>
@@ -301,63 +356,65 @@
             </div>
           </div>
         </div>
-      <% } %>
-      <footer class="footer py-4">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-dark text-lg-start">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>
-                made with <i class="fa fa-heart"></i> by BITE LINK
+        <% } %>
+        <footer class="footer py-4">
+          <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+              <div class="col-lg-6 mb-lg-0 mb-4">
+                <div class="copyright text-center text-sm text-dark text-lg-start">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  made with <i class="fa fa-heart"></i> by BITE LINK
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                  <li class="nav-item">
+                    <a href="#" class="nav-link text-dark" target="_blank">About Us</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="https://www.creative-tim.com/blog" class="nav-link text-dark" target="_blank">Blog</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-dark" target="_blank"
+                      >License</a
+                    >
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <a href="#" class="nav-link text-dark" target="_blank">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/blog" class="nav-link text-dark" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-dark" target="_blank">License</a>
-                </li>
-              </ul>
-            </div>
           </div>
-        </div>
-      </footer>
-    </div>
-  </main>
-  <!--   Core JS Files   -->
-  <script src="/js/core/popper.min.js"></script>
-  <script src="/js/core/bootstrap.min.js"></script>
-  <script src="/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="/js/plugins/smooth-scrollbar.min.js"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
+        </footer>
+      </div>
+    </main>
+    <!--   Core JS Files   -->
+    <script src="/js/core/popper.min.js"></script>
+    <script src="/js/core/bootstrap.min.js"></script>
+    <script src="/js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="/js/plugins/smooth-scrollbar.min.js"></script>
+    <script>
+      var win = navigator.platform.indexOf('Win') > -1;
+      if (win && document.querySelector('#sidenav-scrollbar')) {
+        var options = {
+          damping: '0.5'
+        };
+        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
       }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="/js/material-dashboard.min.js?v=3.1.0"></script>
-  <!-- Jquery -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-   <!-- Crypto Js -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
-    integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  ></script>
-</body>
-
+    </script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="/js/material-dashboard.min.js?v=3.1.0"></script>
+    <!-- Jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <!-- Crypto Js -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+      integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </body>
 </html>

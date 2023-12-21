@@ -412,6 +412,26 @@ $('.logout-btn').click(function () {
   });
 });
 
+//   <<<<<<<<<<<<<<<<<<<<<<<     LOGOUT  ALL    >>>>>>>>>>>>>>>>>>>>>>>>>>
+$('.logout-all-btn').click(async function () {
+  spinner.start();
+  try {
+    const response = await CallToApi('POST', '/users/logoutAll', null);
+    showMessage(response.message, 'success');
+  } catch (error) {
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      const newAccessToken = await getNewAccessToken();
+      if (!newAccessToken) return location.replace('/login');
+      return showMessage('Try Again');
+    } else if (error.responseJSON?.error) {
+      return showMessage(error.responseJSON?.error, 'error');
+    }
+    showMessage('Something went wrong.');
+  } finally {
+    spinner.stop();
+  }
+});
+
 //   <<<<<<<<<<<<<<<<<<<<<<<     USER UPDATE      >>>>>>>>>>>>>>>>>>>>>>>>>>
 
 $('#save-profile-btn').on('click', async function () {
