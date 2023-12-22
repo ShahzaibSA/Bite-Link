@@ -53,25 +53,7 @@ const copyToClipboard = function () {
   showMessage('Your short link copied!', 'success');
 };
 
-const accMsgDiv = function (msg) {
-  var msgDiv = `<div
-            style='background-color: #ffe670; '
-            class="container mb-2 alert"
-            role="alert"
-            >
-            <img src="/assets/img/default.png" alt="icon">
-            <strong class="text-dark p-1">&nbsp${msg}</strong>
-          </div>`;
-
-  $('.acc-del-msg-div').empty().append(msgDiv);
-  $('.acc-del-msg-div')
-    .fadeTo(2500, 500)
-    .slideUp(500, function () {
-      $('#acc-del-msg-div').slideUp(500);
-    });
-};
-
-const showMessage = function (msg, msgType) {
+const showMessage = function (msg, msgType, divType) {
   let color, icon;
   if (msgType == 'success') {
     color = '#6efc64';
@@ -91,22 +73,14 @@ const showMessage = function (msg, msgType) {
           >
           <img src="/assets/img/${icon}" alt="${icon}">
           <strong class="text-dark p-1">&nbsp${msg}</strong>
-          <button
-              style='color: #234f1e; outline: none; margin-top: 2px;'
-              type="button"
-              class="close"
-              data-dismiss="alert"
-              aria-label="Close"
-          >
-              <span aria-hidden="true">&times;</span>
-          </button>
       </div>
     `;
-  $('.message-div').empty().append(msgDiv);
-  $('.message-div')
+  const msgDivClass = $('.modal').hasClass('show') ? '.modal-msg-div' : '.message-div';
+  $(msgDivClass).empty().append(msgDiv);
+  $(msgDivClass)
     .fadeTo(2500, 500)
     .slideUp(500, function () {
-      $('#message-div').slideUp(500);
+      $(msgDivClass).slideUp(500);
     });
 };
 
@@ -209,7 +183,7 @@ const updateLinkHtml = function (data) {
   const redirectUrlDiv = linkRow.find('.link-wrap');
   const shortLinkText = linkRow.find('a.link');
 
-  $('.message-div').css({
+  $('.modal-msg-div').css({
     backgroundColor: '#6efc64',
     borderRadius: '7px'
   });
@@ -245,7 +219,7 @@ const handleDeleteError = async function (error, shortId) {
       const newAccessToken = await getNewAccessToken();
       if (!newAccessToken) return location.replace('/login');
       const response = await CallToApi('DELETE', '/url', { shortId });
-      $('.message-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
       showMessage(response.message, 'success');
       setTimeout(() => {
         $('.modal').removeClass('show').css('display', 'none');
@@ -267,11 +241,14 @@ const handleUpdateUserError = async function (error, data) {
       const newAccessToken = await getNewAccessToken();
       if (!newAccessToken) return location.replace('/login');
       const response = await CallToApi('PATCH', '/users', data);
+      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+      showMessage('Updated Successfully', 'success');
       setTimeout(() => {
         $('.modal').removeClass('show').css('display', 'none');
         $('.fade').removeClass('modal-backdrop');
         $('.fullName').text(response.fullName);
         $('.username').text(response.username);
+        $('.email').text(response.email);
       }, 3100);
     } catch (error) {
       deleteAccessToken();
@@ -319,16 +296,12 @@ $('.register-form').on('submit', async function (e) {
       url: '/users',
       data: $('form').serialize() + `&location=${country ? country : '-'}`,
       success: function (result) {
-        spinner.stop();
-        $('input[type="submit"]').removeAttr('disabled', 'disabled');
         showMessage('Your Account Sccessfully Created!', 'success');
         setTimeout(() => {
           window.location.href = result.redirectUrl;
         }, 2500);
       },
       error: function (error) {
-        spinner.stop();
-        $('input[type="submit"]').removeAttr('disabled', 'disabled');
         var errorMsg = error.responseText ? JSON.parse(error.responseText) : '';
         if (errorMsg?.errors?.password) {
           errorMsg = errorMsg.errors.password.message;
@@ -342,6 +315,9 @@ $('.register-form').on('submit', async function (e) {
     });
   } catch (error) {
     showMessage('Something went wrong!', 'error');
+  } finally {
+    spinner.stop();
+    $('input[type="submit"]').removeAttr('disabled', 'disabled');
   }
 });
 
@@ -433,27 +409,27 @@ $('.logout-all-btn').click(async function () {
 });
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     USER UPDATE      >>>>>>>>>>>>>>>>>>>>>>>>>>
-
 $('#save-profile-btn').on('click', async function () {
   const email = $('input[name=email]').val();
   const fullName = $('input[name=fullName]').val();
   const username = $('input[name=username]').val();
 
   if (!email || !username || !fullName) {
-    $('.message-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+    $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
     return showMessage('All fields required!', 'error');
   }
 
   if (!validateEmail(email)) {
-    $('.message-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+    $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
     return showMessage('Email is valid!', 'error');
   }
 
   $('#save-profile-btn').attr('disabled', true);
+  const data = { email, username, fullName };
   spinner.start();
   try {
-    const response = await CallToApi('PATCH', '/users', { email, username, fullName });
-    $('.message-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+    const response = await CallToApi('PATCH', '/users', data);
+    $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage('Updated Successfully', 'success');
     setTimeout(() => {
       $('.modal').removeClass('show').css('display', 'none');
@@ -463,20 +439,49 @@ $('#save-profile-btn').on('click', async function () {
       $('.email').text(response.email);
     }, 3100);
   } catch (error) {
-    handleUpdateUserError(error);
+    handleUpdateUserError(error, data);
   } finally {
     spinner.stop();
     $('#save-profile-btn').removeAttr('disabled');
   }
 });
 
-//   <<<<<<<<<<<<<<<<<<<<<<<     PROFILE PICTURE UPLOAD      >>>>>>>>>>>>>>>>>>>>>>>>>>
+//   <<<<<<<<<<<<<<<<<<<<<<<     DELETE USER      >>>>>>>>>>>>>>>>>>>>>>>>>>
+$('#delete-profile-form').on('submit', async function (e) {
+  e.preventDefault();
+  const password = $('input[type=password]').val();
+  if (!password) return;
+  spinner.start();
+  try {
+    const response = await CallToApi('DELETE', '/users', { password });
+    $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClass('body-bg');
+    setTimeout(() => {
+      deleteAccessToken();
+      location.replace('/signup');
+      $('.goodbye-div').addClass('d-none');
+    }, 4900);
+  } catch (error) {
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      const newAccessToken = await getNewAccessToken();
+      if (!newAccessToken) return location.replace('/login');
+      return showMessage('Try Again');
+    } else if (error.responseJSON?.error) {
+      return showMessage(error.responseJSON?.error, 'error');
+    }
+    showMessage('Something went wrong.', 'error');
+  } finally {
+    spinner.stop();
+  }
+});
+
+//   <<<<<<<<<<<<<<<<<<<<<<<     PICTURE INPUT      >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('input[type=file]').on('change', function () {
   const file = $('input[type=file]');
   if (!file[0].files.length) return $('#upload-picture-btn').addClass('d-none');
   $('#upload-picture-btn').removeClass('d-none');
 });
 
+//   <<<<<<<<<<<<<<<<<<<<<<<     UPLOAD PICTURE      >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('#picture-form').on('submit', async function (e) {
   e.preventDefault();
   const file = $('input[type=file]')[0].files[0];
@@ -519,7 +524,7 @@ $('#picture-form').on('submit', async function (e) {
       }, 1000);
     } else {
       $('.avatar-img').attr('src', avatarImgSrc);
-      $('.message-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+      $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
       showMessage('Only image is allowed!', 'error');
     }
   } finally {
@@ -527,6 +532,7 @@ $('#picture-form').on('submit', async function (e) {
   }
 });
 
+//   <<<<<<<<<<<<<<<<<<<<<<<     DELETE PICTURE      >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('#delete-picture-btn').on('click', async function () {
   spinner.start();
   try {
@@ -536,13 +542,13 @@ $('#delete-picture-btn').on('click', async function () {
     setTimeout(() => {
       $('.avatar-img').attr('src', 'https://img.icons8.com/stickers/100/user.png');
     }, 1500);
-    $('.message-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+    $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage(response.message, 'success');
   } catch (error) {
     if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
       const newAccessToken = await getNewAccessToken();
       if (!newAccessToken) return location.replace('/login');
-      $('.message-div').css({ 'background-color': '#ffe670', 'border-radius': '7px' });
+      $('.modal-msg-div').css({ 'background-color': '#ffe670', 'border-radius': '7px' });
       return showMessage('Try Again.');
     }
     showMessage('Something went wrong.', 'error');
@@ -551,35 +557,7 @@ $('#delete-picture-btn').on('click', async function () {
   }
 });
 
-$('#delete-profile-form').on('submit', async function (e) {
-  e.preventDefault();
-  const password = $('input[type=password]').val();
-  if (!password) return;
-  spinner.start();
-  try {
-    const response = await CallToApi('DELETE', '/users', { password });
-    $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClass('body-bg');
-    setTimeout(() => {
-      deleteAccessToken();
-      location.replace('/signup');
-      $('.goodbye-div').addClass('d-none');
-    }, 4900);
-  } catch (error) {
-    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-      const newAccessToken = await getNewAccessToken();
-      if (!newAccessToken) return location.replace('/login');
-      return accMsgDiv('Try Again');
-    } else if (error.responseJSON?.error) {
-      return accMsgDiv(error.responseJSON?.error);
-    }
-    accMsgDiv('Something went wrong.');
-  } finally {
-    spinner.stop();
-  }
-});
-
 //2   <<<<<<<<<<<<<<<<<<<<<<<     CREATE URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
-
 $('.url-form').on('submit', function (e) {
   e.preventDefault();
   if (!validateUrl($('input[name="url"]').val())) {
@@ -629,7 +607,6 @@ $('.url-form').on('submit', function (e) {
 });
 
 //2   <<<<<<<<<<<<<<<<<<<<<<<     ANALYTICS URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
-
 $('.analytics-form').on('submit', function (e) {
   e.preventDefault();
   if (!validateUrl($('input[name="url"]').val())) {
@@ -682,14 +659,13 @@ $('.analytics-form').on('submit', function (e) {
 });
 
 //2   <<<<<<<<<<<<<<<<<<<<<<<     UPDATE URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
-
 $('#update-link-btn').on('click', async function () {
   const redirectUrl = $('#url').val();
   const shortId = $('#urlShortId').val();
   const status = $('#linkStatus').val() === 'running';
 
   if (!validateUrl(redirectUrl)) {
-    $('.message-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
+    $('.modal-msg-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
     return showMessage('Url is not valid!', 'error');
   }
 
@@ -715,7 +691,7 @@ $('#update-link-btn').on('click', async function () {
         location.replace('/login');
       }
     } else {
-      $('.message-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
+      $('.modal-msg-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
       showMessage(error.responseJSON?.error, 'error');
     }
   } finally {
@@ -725,7 +701,6 @@ $('#update-link-btn').on('click', async function () {
 });
 
 //2   <<<<<<<<<<<<<<<<<<<<<<<     DELETE URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
-
 $('#delete-link-btn').on('click', async function () {
   const shortId = $('#urlShortId').val();
   const userConsent = confirm('Are you sure you want to delete this link?');
@@ -736,7 +711,7 @@ $('#delete-link-btn').on('click', async function () {
 
   try {
     const response = await CallToApi('DELETE', '/url', { shortId });
-    $('.message-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+    $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage(response.message, 'success');
     setTimeout(() => {
       $('.modal').removeClass('show').css('display', 'none');
@@ -747,6 +722,6 @@ $('#delete-link-btn').on('click', async function () {
     handleDeleteError(error, shortId);
   } finally {
     spinner.stop();
-    $('#delete-link-btn, #saveLink').removeAttr('disabled');
+    $('#delete-link-btn, #saveLink,  #update-link-btn').removeAttr('disabled');
   }
 });

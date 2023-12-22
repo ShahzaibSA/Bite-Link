@@ -6,6 +6,46 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Analytics</title>
+    <style>
+      #loader {
+        border: 12px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 12px solid #444444;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+      }
+      .center {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
+      document.onreadystatechange = function () {
+        var body = document.querySelector('body');
+        var mainDiv = document.querySelector('main');
+        var loader = document.querySelector('#loader');
+        if (document.readyState !== 'complete') {
+          mainDiv.style.opacity = 0.3;
+          body.style.visibility = 'hidden';
+          loader.style.visibility = 'visible';
+        } else {
+          mainDiv.style.opacity = 1;
+          loader.style.display = 'none';
+          body.style.visibility = 'visible';
+        }
+      };
+    </script>
     <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
     <!-- Font Awesome icons (free version)-->
     <script src="https://kit.fontawesome.com/5c3118c91c.js" crossorigin="anonymous"></script>
@@ -19,7 +59,8 @@
     <script src="/js/scripts.js" defer></script>
   </head>
   <body id="page-top">
-   <div class="spinner d-none" role="status">
+    <div id="loader" class="center"></div>
+    <div class="spinner d-none" role="status">
       <span class="sr-only">Loading...</span>
     </div>
     <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
@@ -57,66 +98,73 @@
         </div>
       </div>
     </nav>
-    <header class="masthead bg-primary text-white text-center">
-      <div class="container d-flex align-items-center flex-column">
-        <!-- Masthead Avatar Image--><img
-          style="width: 16%"
-          class="masthead-avatar mb-5"
-          src="/assets/img/logo.svg"
-          alt="url-shortener.png"
-        />
-        <!-- Masthead Heading-->
-        <h1 class="masthead-heading mb-0">Make every connection count</h1>
-        <p class="pre-wrap masthead-subheading font-weight-light mb-0">
-          Create short links, Share them anywhere. Track what’s working, and what’s not.
-        </p>
-      </div>
-      <!-- Icon Divider-->
-      <div class="divider-custom">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon"><i class="fa-solid fa-star fa-spin"></i></div>
-        <div class="divider-custom-line"></div>
-      </div>
-      <div class="container-sm mt-4">
-        <p class="pre-wrap masthead-subheading font-weight-bold pr-5" style="font-size: 27px">
-          <i class="fa-solid fa-link" style="color: #384949"></i>&nbsp; Check your analytics of URL &nbsp;<i
-            class="fa-solid fa-link"
-            style="color: #fcd201"
-          ></i>
-        </p>
-        <div class="message-div"></div>
-        <form class="analytics-form">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon3">Paste your short URL</span>
+    <main>
+      <header class="masthead bg-primary text-white text-center">
+        <div class="container d-flex align-items-center flex-column">
+          <!-- Masthead Avatar Image--><img
+            style="width: 16%"
+            class="masthead-avatar mb-5"
+            src="/assets/img/logo.svg"
+            alt="url-shortener.png"
+          />
+          <!-- Masthead Heading-->
+          <h1 class="masthead-heading mb-0">Make every connection count</h1>
+          <p class="pre-wrap masthead-subheading font-weight-light mb-0">
+            Create short links, Share them anywhere. Track what’s working, and what’s not.
+          </p>
+        </div>
+        <!-- Icon Divider-->
+        <div class="divider-custom">
+          <div class="divider-custom-line"></div>
+          <div class="divider-custom-icon"><i class="fa-solid fa-star fa-spin"></i></div>
+          <div class="divider-custom-line"></div>
+        </div>
+        <div class="container-sm mt-4">
+          <p class="pre-wrap masthead-subheading font-weight-bold pr-5" style="font-size: 27px">
+            <i class="fa-solid fa-link" style="color: #384949"></i>&nbsp; Check your analytics of URL &nbsp;<i
+              class="fa-solid fa-link"
+              style="color: #fcd201"
+            ></i>
+          </p>
+          <div class="message-div"></div>
+          <form class="analytics-form">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Paste your short URL</span>
+              </div>
+              <input
+                required
+                name="url"
+                type="url"
+                class="form-control"
+                placeholder="https://example.com/users/"
+              />
+              &nbsp;
+              <button type="submit" class="btn btn-primary btn-sm">Get Analytics</button>
             </div>
-            <input required name="url" type="url" class="form-control" placeholder="https://example.com/users/" />
-            &nbsp;
-            <button type="submit" class="btn btn-primary btn-sm">Get Analytics</button>
+          </form>
+          <div class="spinner-div text-dark d-none my-4 mx-4" role="status">
+            <span class="sr-only">Loading...</span>
           </div>
-        </form>
-        <div class="spinner-div text-dark d-none my-4 mx-4" role="status">
-          <span class="sr-only">Loading...</span>
+          <div class="analytics-data-div" style="display: none">
+            <table class="table table-bordered">
+              <thead style="color: #2c3e50">
+                <tr>
+                  <th scope="col">Total Clicks : <span class="total-clicks"></span></th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Ip Address</th>
+                  <th scope="col">Original URL</th>
+                </tr>
+              </thead>
+              <tbody class="table-body"></tbody>
+            </table>
+          </div>
         </div>
-        <div class="analytics-data-div" style="display: none">
-          <table class="table table-bordered">
-            <thead style="color: #2c3e50">
-              <tr>
-                <th scope="col">Total Clicks : <span class="total-clicks"></span></th>
-                <th scope="col">Date</th>
-                <th scope="col">Ip Address</th>
-                <th scope="col">Original URL</th>
-              </tr>
-            </thead>
-            <tbody class="table-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </header>
+      </header>
 
-    <!-- Portfolio Modal-->
+      <!-- Portfolio Modal-->
 
-    <!-- <section class="container-sm" style="color: aqua">
+      <!-- <section class="container-sm" style="color: aqua">
       <label for="basic-url">Your vanity URL</label>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -132,84 +180,85 @@
         />
       </div>
     </section> -->
-    <section class="page-section" id="contact">
-      <div class="container">
-        <!-- Contact Section Heading-->
-        <div class="text-center">
-          <h2 class="page-section-heading text-secondary d-inline-block mb-0">CONTACT</h2>
-        </div>
-        <!-- Icon Divider-->
-        <div class="divider-custom">
-          <div class="divider-custom-line"></div>
-          <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-          <div class="divider-custom-line"></div>
-        </div>
-        <!-- Contact Section Content-->
-        <div class="row justify-content-center">
-          <div class="col-lg-4">
-            <div class="d-flex flex-column align-items-center">
-              <div class="icon-contact mb-3">
-                <i class="fas fa-mobile-alt"></i>
+      <section class="page-section" id="contact">
+        <div class="container">
+          <!-- Contact Section Heading-->
+          <div class="text-center">
+            <h2 class="page-section-heading text-secondary d-inline-block mb-0">CONTACT</h2>
+          </div>
+          <!-- Icon Divider-->
+          <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+          </div>
+          <!-- Contact Section Content-->
+          <div class="row justify-content-center">
+            <div class="col-lg-4">
+              <div class="d-flex flex-column align-items-center">
+                <div class="icon-contact mb-3">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="text-muted">Phone</div>
+                <div class="lead font-weight-bold">(+92) 334-3582713</div>
               </div>
-              <div class="text-muted">Phone</div>
-              <div class="lead font-weight-bold">(+92) 334-3582713</div>
+            </div>
+            <div class="col-lg-4">
+              <div class="d-flex flex-column align-items-center">
+                <div class="icon-contact mb-3">
+                  <i class="far fa-envelope"></i>
+                </div>
+                <div class="text-muted">Email</div>
+                <a class="lead font-weight-bold" href="mailto:dev.shahzaibahmed@gmail.com"
+                  >dev.shahzaibahmed@gmail.com</a
+                >
+              </div>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="d-flex flex-column align-items-center">
-              <div class="icon-contact mb-3">
-                <i class="far fa-envelope"></i>
-              </div>
-              <div class="text-muted">Email</div>
-              <a class="lead font-weight-bold" href="mailto:dev.shahzaibahmed@gmail.com"
-                >dev.shahzaibahmed@gmail.com</a
-              >
+        </div>
+      </section>
+      <footer class="footer text-center">
+        <div class="container">
+          <div class="row">
+            <!-- Footer Location-->
+            <div class="col-lg-4 mb-5 mb-lg-0">
+              <h4 class="mb-4">LOCATION</h4>
+              <p class="pre-wrap lead mb-0">Karachi, Sindh, Pakistan</p>
+            </div>
+            <!-- Footer Social Icons-->
+            <div class="col-lg-4 mb-5 mb-lg-0">
+              <h4 class="mb-4">AROUND THE WEB</h4>
+              <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/StartBootstrap"
+                ><i class="fab fa-fw fa-facebook-f"></i></a
+              ><a class="btn btn-outline-light btn-social mx-1" href="https://www.twitter.com/sbootstrap"
+                ><i class="fab fa-fw fa-twitter"></i></a
+              ><a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/startbootstrap"
+                ><i class="fab fa-fw fa-linkedin-in"></i></a
+              ><a class="btn btn-outline-light btn-social mx-1" href="https://www.dribble.com/startbootstrap"
+                ><i class="fab fa-fw fa-dribbble"></i
+              ></a>
+            </div>
+            <!-- Footer About Text-->
+            <div class="col-lg-4">
+              <h4 class="mb-4">ABOUT FREELANCER</h4>
+              <p class="pre-wrap lead mb-0"></p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-    <footer class="footer text-center">
-      <div class="container">
-        <div class="row">
-          <!-- Footer Location-->
-          <div class="col-lg-4 mb-5 mb-lg-0">
-            <h4 class="mb-4">LOCATION</h4>
-            <p class="pre-wrap lead mb-0">Karachi, Sindh, Pakistan</p>
-          </div>
-          <!-- Footer Social Icons-->
-          <div class="col-lg-4 mb-5 mb-lg-0">
-            <h4 class="mb-4">AROUND THE WEB</h4>
-            <a class="btn btn-outline-light btn-social mx-1" href="https://www.facebook.com/StartBootstrap"
-              ><i class="fab fa-fw fa-facebook-f"></i></a
-            ><a class="btn btn-outline-light btn-social mx-1" href="https://www.twitter.com/sbootstrap"
-              ><i class="fab fa-fw fa-twitter"></i></a
-            ><a class="btn btn-outline-light btn-social mx-1" href="https://www.linkedin.com/in/startbootstrap"
-              ><i class="fab fa-fw fa-linkedin-in"></i></a
-            ><a class="btn btn-outline-light btn-social mx-1" href="https://www.dribble.com/startbootstrap"
-              ><i class="fab fa-fw fa-dribbble"></i
-            ></a>
-          </div>
-          <!-- Footer About Text-->
-          <div class="col-lg-4">
-            <h4 class="mb-4">ABOUT FREELANCER</h4>
-            <p class="pre-wrap lead mb-0"></p>
-          </div>
+      </footer>
+      <!-- Copyright Section-->
+      <section class="copyright py-4 text-center text-white">
+        <div class="container">
+          <small class="pre-wrap">Copyright © Url-Shortener 2023</small>
         </div>
+      </section>
+      <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
+      <div class="scroll-to-top d-lg-none position-fixed">
+        <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"
+          ><i class="fa fa-chevron-up"></i
+        ></a>
       </div>
-    </footer>
-    <!-- Copyright Section-->
-    <section class="copyright py-4 text-center text-white">
-      <div class="container">
-        <small class="pre-wrap">Copyright © Url-Shortener 2023</small>
-      </div>
-    </section>
-    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
-    <div class="scroll-to-top d-lg-none position-fixed">
-      <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"
-        ><i class="fa fa-chevron-up"></i
-      ></a>
-    </div>
+    </main>
     <!-- Bootstrap core JS-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
