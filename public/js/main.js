@@ -293,7 +293,7 @@ $('.register-form').on('submit', async function (e) {
         : error?.responseJSON?.errors?.email
         ? 'Email is not valid!'
         : 'Something went wrong! Please try again later.';
-    showMessage(errorMsg, 'error');
+    showMessage(errorMsg || 'Something went wrong!', 'error');
   } finally {
     spinner.stop();
     $('input[type="submit"]').attr('disabled', false);
@@ -331,7 +331,7 @@ $('.login-form').on('submit', function (event) {
       submitButton.prop('disabled', false);
 
       // Display an error message if the server returns an error message
-      showMessage(error.responseJSON?.error, 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong!', 'error');
     });
 });
 
@@ -347,10 +347,8 @@ $('.logout-btn').click(async function () {
     if (errJson === 'EXPIRED_TOKEN') {
       const response = await callApiWithNewToken('POST', '/users/logout', null);
       location.replace(response.redirectUrl);
-    } else if (errJson) {
-      return showMessage(errJson, 'error');
     } else {
-      showMessage('Something went wrong.');
+      showMessage(errJson || 'Something went wrong.');
     }
   } finally {
     spinner.stop();
@@ -369,10 +367,8 @@ $('.logout-all-btn').click(async function () {
     if (errJson === 'EXPIRED_TOKEN') {
       const response = await callApiWithNewToken('POST', '/users/logoutAll', null);
       return showMessage(response.message);
-    } else if (errJson) {
-      return showMessage(errJson, 'error');
     } else {
-      showMessage('Something went wrong.');
+      showMessage(errJson || 'Something went wrong.');
     }
   } finally {
     spinner.stop();
@@ -434,19 +430,13 @@ $('#save-profile-btn').on('click', async function () {
           $('.email').text(response.email);
         }, 3100);
       } catch (error) {
-        // If the email is already in use, display an error message
-        if (error?.responseJSON?.code === 11000) {
-          $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
-          return showMessage('Email already in use!', 'error');
-        }
+        $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+        return showMessage(error.responseJSON?.error || 'Something went wrong!', 'error');
       }
-    } else if (error?.responseJSON?.code === 11000) {
-      // If the email is already in use, display an error message
-      $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
-      return showMessage('Email already in use!', 'error');
     } else {
       // If there is any other error, display the error message
-      showMessage(responseJSON?.error, 'error');
+      $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+      return showMessage(error.responseJSON?.error || 'Something went wrong!', 'error');
     }
   } finally {
     // Stop the spinner and enable the "save profile" button
@@ -462,7 +452,7 @@ $('#delete-profile-form').on('submit', async function (e) {
   if (!password) return;
   spinner.start();
   try {
-    await callToApi('DELETE', '/users', { password });
+    await callToApi('DELETE', '/users', password);
     $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClass('body-bg');
     setTimeout(() => {
       deleteAccessToken();
@@ -471,13 +461,15 @@ $('#delete-profile-form').on('submit', async function (e) {
     }, 4900);
   } catch (error) {
     if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-      const newAccessToken = await getNewAccessToken();
-      if (!newAccessToken) return location.replace('/login');
-      return showMessage('Try Again');
-    } else if (error.responseJSON?.error) {
-      return showMessage(error.responseJSON?.error, 'error');
+      await callApiWithNewToken('DELETE', '/users', password);
+      $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClass('body-bg');
+      setTimeout(() => {
+        deleteAccessToken();
+        location.replace('/signup');
+        $('.goodbye-div').addClass('d-none');
+      }, 4900);
     } else {
-      showMessage('Something went wrong.', 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong.');
     }
   } finally {
     spinner.stop();
@@ -571,7 +563,7 @@ $('#delete-picture-btn').on('click', async function () {
       $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
       showMessage(response.message, 'success');
     } else {
-      showMessage('Something went wrong.', 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong.');
     }
   } finally {
     spinner.stop();
@@ -597,7 +589,7 @@ $('.url-form').on('submit', async function (e) {
       const response = await callApiWithNewToken('POST', '/url', $(this).serialize());
       showNewGeneratedUrl(response);
     } else {
-      showMessage(error.responseJSON?.error, 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong.');
     }
   } finally {
     spinner.stop();
@@ -661,7 +653,7 @@ $('.analytics-form').on('submit', async function (e) {
     } else {
       analyticsDiv.hide();
       $('.table-body', '.total-clicks').empty();
-      showMessage(error.responseJSON?.error, 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong!', 'error');
     }
   } finally {
     spinner.stop();
@@ -692,7 +684,7 @@ $('#update-link-btn').on('click', async function () {
       updateLinkHtml(response);
     } else {
       $('.modal-msg-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
-      showMessage(error.responseJSON?.error, 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong!', 'error');
     }
   } finally {
     spinner.stop();
@@ -730,7 +722,7 @@ $('#delete-link-btn').on('click', async function () {
       }, 3100);
     } else {
       $('.modal-msg-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
-      showMessage(error.responseJSON?.error, 'error');
+      showMessage(error.responseJSON?.error || 'Something went wrong!', 'error');
     }
   } finally {
     spinner.stop();
