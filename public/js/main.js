@@ -381,25 +381,33 @@ $('.logout-all-btn').click(async function () {
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     USER UPDATE      >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('#save-profile-btn').on('click', async function () {
+  // Retrieve the values of the email, full name, and username input fields
   const email = $('input[name=email]').val();
   const fullName = $('input[name=fullName]').val();
   const username = $('input[name=username]').val();
 
+  // Check if any of the fields are empty and display an error message if any of them are empty
   if (!email || !username || !fullName) {
     $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
     return showMessage('All fields required!', 'error');
   }
 
+  // Check if the email is valid and display an error message if it is not valid
   if (!validateEmail(email)) {
     $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
-    return showMessage('Email is valid!', 'error');
+    return showMessage('Email is not valid!', 'error');
   }
 
+  // Disable the "save profile" button and prepare the data to be sent to the server
   $('#save-profile-btn').attr('disabled', true);
   const data = { email, username, fullName };
+
+  // Start the spinner and send the PATCH request to the server
   spinner.start();
   try {
     const response = await callToApi('PATCH', '/users', data);
+
+    // Display a success message and update the user information on the page
     $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage('Updated Successfully', 'success');
     setTimeout(() => {
@@ -410,21 +418,38 @@ $('#save-profile-btn').on('click', async function () {
       $('.email').text(response.email);
     }, 3100);
   } catch (error) {
+    // If the token is expired, send another request with a new token
     if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-      const response = await callApiWithNewToken('PATCH', '/users', data);
-      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
-      showMessage('Updated Successfully', 'success');
-      setTimeout(() => {
-        $('.modal').removeClass('show').hide();
-        $('.fade').removeClass('modal-backdrop');
-        $('.fullName').text(response.fullName);
-        $('.username').text(response.username);
-        $('.email').text(response.email);
-      }, 3100);
+      try {
+        const response = await callApiWithNewToken('PATCH', '/users', data);
+
+        // Display a success message and update the user information on the page
+        $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+        showMessage('Updated Successfully', 'success');
+        setTimeout(() => {
+          $('.modal').removeClass('show').hide();
+          $('.fade').removeClass('modal-backdrop');
+          $('.fullName').text(response.fullName);
+          $('.username').text(response.username);
+          $('.email').text(response.email);
+        }, 3100);
+      } catch (error) {
+        // If the email is already in use, display an error message
+        if (error?.responseJSON?.code === 11000) {
+          $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+          return showMessage('Email already in use!', 'error');
+        }
+      }
+    } else if (error?.responseJSON?.code === 11000) {
+      // If the email is already in use, display an error message
+      $('.modal-msg-div').css({ 'background-color': '#ff6b61', 'border-radius': '7px' });
+      return showMessage('Email already in use!', 'error');
     } else {
+      // If there is any other error, display the error message
       showMessage(responseJSON?.error, 'error');
     }
   } finally {
+    // Stop the spinner and enable the "save profile" button
     spinner.stop();
     $('#save-profile-btn').removeAttr('disabled');
   }
