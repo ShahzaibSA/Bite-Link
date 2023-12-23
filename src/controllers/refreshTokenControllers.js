@@ -34,7 +34,7 @@ const hanleRefreshToken = async function (req, res) {
       }
       if (decoded.uid !== foundUser._id.toString()) return res.status(403).send({ error: 'INVALID_TOKEN' });
 
-      const newAccessToken = generateToken(foundUser._id.toString(), 'AT', '30m');
+      const newAccessToken = generateToken(foundUser._id.toString(), 'AT', '10s');
       const newRefreshToken = generateToken(decoded.uid, 'RT', '1d');
 
       foundUser.refreshTokens = [...newRefreshTokensArr, { refreshToken: newRefreshToken }];

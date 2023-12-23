@@ -5,8 +5,9 @@ var SECRET_KEY = '@cce$$T0ken$ecretKey@1996';
 $(window).on('load', function () {
   $('.link').each((i, el) => {
     const shortId = $('input[name=shortId]')[i].defaultValue;
-    el.href = window.location.origin + '/url/' + shortId;
-    el.innerText = window.location.origin + '/url/' + shortId;
+    const url = `${window.location.origin}/url/${shortId}`;
+    el.href = url;
+    el.innerText = url;
   });
 });
 
@@ -14,33 +15,47 @@ $('body').on('click', function (e) {
   const shortId = e.target?.nextSibling?.nextSibling?.defaultValue;
   if (shortId) {
     const linkEl = $(`.short-id-${shortId}`);
-    if (linkEl[0]?.href) {
-      linkEl.addClass('text-primary');
-      linkEl.text('Link Copied');
-      navigator.clipboard.writeText(linkEl[0].href);
+    const href = linkEl[0]?.href;
+    if (href) {
+      linkEl.addClass('text-primary').text('Link Copied');
+      navigator.clipboard.writeText(href);
       setTimeout(() => {
-        linkEl.removeClass('text-primary');
-        linkEl.text(linkEl[0].href);
+        linkEl.removeClass('text-primary').text(href);
       }, 2000);
     }
   }
 });
 
+// $('.edit-link-btn').on('click', function (e) {
+//   const urlDataRow = $(e.target).parent().siblings('td');
+//   if (urlDataRow) {
+//     const shortId = urlDataRow[0].children[0].children[0].querySelector('input').value;
+//     const redirectUrl = urlDataRow[1].children[0].innerText;
+//     const status = urlDataRow[3].children[0].innerText?.toLowerCase();
+//     const shortIdInputHtml = `<input id='urlShortId' type="hidden" value="${shortId}">`;
+//     $('#shortIdInputDiv').empty().append(shortIdInputHtml);
+//     $('#url').val(redirectUrl);
+
+//     const selected = $('#linkStatus > option[selected=selected]');
+//     if (selected) $(selected).removeAttr('selected');
+
+//     const opt = $(`option[value=${status}]`)[0];
+//     $(opt).attr('selected', 'selected');
+//   }
+// });
+
 $('.edit-link-btn').on('click', function (e) {
   const urlDataRow = $(e.target).parent().siblings('td');
   if (urlDataRow) {
-    const shortId = urlDataRow[0].children[0].children[0].querySelector('input').value;
-    const redirectUrl = urlDataRow[1].children[0].innerText;
-    const status = urlDataRow[3].children[0].innerText?.toLowerCase();
+    const shortId = urlDataRow.find('input').val();
+    const redirectUrl = urlDataRow.eq(1).text();
+    const status = urlDataRow.eq(3).find('span').text().toLowerCase();
     const shortIdInputHtml = `<input id='urlShortId' type="hidden" value="${shortId}">`;
-    $('#shortIdInputDiv').empty().append(shortIdInputHtml);
+    $('#shortIdInputDiv').html(shortIdInputHtml);
     $('#url').val(redirectUrl);
 
-    const selected = $('#linkStatus > option[selected=selected]');
-    if (selected) $(selected).removeAttr('selected');
-
-    const opt = $(`option[value=${status}]`)[0];
-    $(opt).attr('selected', 'selected');
+    $('#linkStatus option').removeAttr('selected');
+    $(`#linkStatus option[value=${status}]`).attr('selected', 'selected');
   }
 });
 
@@ -53,7 +68,7 @@ const copyToClipboard = function () {
   showMessage('Your short link copied!', 'success');
 };
 
-const showMessage = function (msg, msgType, divType) {
+const showMessage = function (msg, msgType) {
   let color, icon;
   if (msgType == 'success') {
     color = '#6efc64';
@@ -62,7 +77,7 @@ const showMessage = function (msg, msgType, divType) {
     color = '#ff6b61';
     icon = 'error.png';
   } else {
-    color = '#ffe670';
+    color = '#3b95ee';
     icon = 'default.png';
   }
   var msgDiv = `
@@ -72,7 +87,7 @@ const showMessage = function (msg, msgType, divType) {
           role="alert"
           >
           <img src="/assets/img/${icon}" alt="${icon}">
-          <strong class="text-dark p-1">&nbsp${msg}</strong>
+          <strong class="p-1" style="color: black;">&nbsp${msg}</strong>
       </div>
     `;
   const msgDivClass = $('.modal').hasClass('show') ? '.modal-msg-div' : '.message-div';
@@ -95,19 +110,27 @@ const validateUrl = function (url) {
 };
 
 const spinner = {
-  start: function (type) {
+  start: function () {
     $('.spinner').removeClass('d-none').addClass('spinner-show').addClass('body-bg');
   },
-  stop: function (type) {
+  stop: function () {
     $('.spinner').addClass('d-none').removeClass('spinner-show').removeClass('body-bg');
   }
 };
 
-const setAccessToken = function (at) {
-  const encryptedToken = CryptoJS.AES.encrypt(at, SECRET_KEY).toString();
+/**
+ * Encrypts the access token using AES encryption and sets it in local storage.
+ * - The access token to be encrypted and stored.
+ */
+const setAccessToken = (accessToken) => {
+  const encryptedToken = CryptoJS.AES.encrypt(accessToken, SECRET_KEY).toString();
   localStorage.setItem('accessToken', encryptedToken);
 };
 
+/**
+ * This function retrieves the access token from local storage, decrypts it using a secret key, and returns the decrypted token.
+ * @returns {string} The decrypted access token.
+ */
 const getAccessToken = function () {
   const encryptedToken = localStorage.getItem('accessToken');
   const decryptedToken = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY).toString(CryptoJS.enc.Utf8);
@@ -116,23 +139,23 @@ const getAccessToken = function () {
 
 const deleteAccessToken = () => localStorage.clear();
 
-const getNewAccessToken = function () {
-  return Promise.resolve(
-    $.ajax({
-      type: 'POST',
-      url: '/refresh',
-      success: function (result) {
-        setAccessToken(result.accessToken);
-        return result.accessToken;
-      },
-      error: function (error) {
-        return error;
-      }
-    })
-  );
+/**
+ * This function sends a POST request to the '/refresh' endpoint to get a new access token.
+ * If successful, it sets the new access token and returns it.
+ * If unsuccessful, it returns the error.
+ * @returns {string|Error} The new access token or an error object.
+ */
+const getNewAccessToken = async function () {
+  try {
+    const result = await $.post('/refresh'); // Send POST request to '/refresh' endpoint
+    setAccessToken(result.accessToken); // Set the new access token
+    return result.accessToken; // Return the new access token
+  } catch (error) {
+    return error; // Return the error object if request fails
+  }
 };
 
-const setReqHeader = (xhr) => xhr.setRequestHeader('Authorization', 'Bearer ' + getAccessToken());
+const setReqHeader = (xhr) => xhr.setRequestHeader('Authorization', `Bearer ${getAccessToken()}`);
 
 const showNewGeneratedUrl = function (result) {
   const link = window.location.href + 'url/' + result.id;
@@ -160,21 +183,20 @@ const showNewGeneratedUrl = function (result) {
 };
 
 const blockSpecialChar = function (e) {
-  var k = e.keyCode;
-  var specialChar;
-  if (e.target.name == 'username')
-    specialChar = (k > 64 && k < 91) || (k > 94 && k < 123) || k == 8 || (k >= 48 && k <= 57);
+  const k = e.keyCode;
+  let specialChar;
+  if (e.target.name === 'username') {
+    specialChar = (k > 64 && k < 91) || (k > 94 && k < 123) || k === 8 || (k >= 48 && k <= 57);
+  } else if (e.target.name === 'fullName') {
+    specialChar = k === 32 || (k > 64 && k < 91) || (k > 96 && k < 123) || k === 8;
+  }
 
-  if (e.target.name == 'fullName') specialChar = k == 32 || (k > 64 && k < 91) || (k > 96 && k < 123) || k == 8;
-
-  if (!specialChar) showMessage('Special characters and numbers are not allowed! ' + `"${e.key}"`);
+  if (!specialChar) {
+    showMessage(`Special characters and numbers are not allowed! "${e.key}"`);
+  }
 
   return specialChar;
 };
-
-$('.close').click(function () {
-  $('.show').remove();
-});
 
 const updateLinkHtml = function (data) {
   const shortId = $('#urlShortId').val();
@@ -183,7 +205,8 @@ const updateLinkHtml = function (data) {
   const redirectUrlDiv = linkRow.find('.link-wrap');
   const shortLinkText = linkRow.find('a.link');
 
-  $('.modal-msg-div').css({
+  const modalMsgDiv = $('.modal-msg-div');
+  modalMsgDiv.css({
     backgroundColor: '#6efc64',
     borderRadius: '7px'
   });
@@ -191,7 +214,8 @@ const updateLinkHtml = function (data) {
   showMessage('Link info updated!', 'success');
 
   setTimeout(() => {
-    $('.modal').removeClass('show').css('display', 'none');
+    const modal = $('.modal');
+    modal.removeClass('show').hide();
     $('.fade').removeClass('modal-backdrop');
 
     redirectUrlDiv[0].firstChild.href = data.redirectUrl;
@@ -213,196 +237,143 @@ function validateEmail(email) {
   return regex.test(email);
 }
 
-const handleDeleteError = async function (error, shortId) {
-  if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-    try {
-      const newAccessToken = await getNewAccessToken();
-      if (!newAccessToken) return location.replace('/login');
-      const response = await CallToApi('DELETE', '/url', { shortId });
-      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
-      showMessage(response.message, 'success');
-      setTimeout(() => {
-        $('.modal').removeClass('show').css('display', 'none');
-        $('.fade').removeClass('modal-backdrop');
-        $(`.link-row-id-${shortId}`).remove();
-      }, 3100);
-    } catch (error) {
-      deleteAccessToken();
-      location.replace('/login');
-    }
-  } else {
-    showMessage(error.responseJSON?.error, 'error');
-  }
-};
-
-const handleUpdateUserError = async function (error, data) {
-  if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-    try {
-      const newAccessToken = await getNewAccessToken();
-      if (!newAccessToken) return location.replace('/login');
-      const response = await CallToApi('PATCH', '/users', data);
-      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
-      showMessage('Updated Successfully', 'success');
-      setTimeout(() => {
-        $('.modal').removeClass('show').css('display', 'none');
-        $('.fade').removeClass('modal-backdrop');
-        $('.fullName').text(response.fullName);
-        $('.username').text(response.username);
-        $('.email').text(response.email);
-      }, 3100);
-    } catch (error) {
-      deleteAccessToken();
-      location.replace('/login');
-    }
-  } else {
-    showMessage(error.responseJSON?.error, 'error');
+const callApiWithNewToken = async function (method, endpoint, data) {
+  try {
+    const newAccessToken = await getNewAccessToken();
+    if (!newAccessToken) return location.replace('/login');
+    const response = await callToApi(method, endpoint, data);
+    return response;
+  } catch (error) {
+    return error;
   }
 };
 
 //4  <<<<<<<<<<<<<<<<<<<<<<<     CALL TO API       >>>>>>>>>>>>>>>>>>>>>>>>
 
-const CallToApi = async function (method, endpoint, data) {
-  const response = await $.ajax({
-    type: method,
-    url: endpoint,
-    data: data,
-    beforeSend: setReqHeader,
-    success: (data) => data,
-    error: (error) => error
-  });
-  return response;
+const callToApi = async function (method, endpoint, data) {
+  try {
+    const response = await $.ajax({
+      type: method,
+      url: endpoint,
+      data: data,
+      beforeSend: setReqHeader
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
 };
 
 //! <<<<<<<<<<<<<<<<<<<<<<<     AJAX REQUEST      >>>>>>>>>>>>>>>>>>>>>>>>>>
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     SIGN UP      >>>>>>>>>>>>>>>>>>>>>>>>>>
-
 $('.register-form').on('submit', async function (e) {
   e.preventDefault();
-  if ($('#pass').val().toLowerCase().includes('password')) {
-    return showMessage('Password cannot contain "password"', 'error');
+  const password = $('#pass').val();
+  const isPasswordValid = password.length >= 7 && !password.toLowerCase().includes('password');
+  if (!isPasswordValid) {
+    return showMessage('Password must be minimum 7 characters and cannot contain "password"!', 'error');
   }
-  if ($('#pass').val().length < 7) {
-    return showMessage('Password must be minimum 5 characters!', 'error');
-  }
-  $('input[type="submit"]').attr('disabled', 'disabled');
+  $('input[type="submit"]').attr('disabled', true);
   spinner.start();
   try {
     const response = await fetch('https://api.geoapify.com/v1/ipinfo?apiKey=1a4b6df0847e460b886172b3971eb66d');
     const data = await response.json();
-    var country = data.city.name + ',' + ' ' + data.country.name;
-    $.ajax({
-      type: 'POST',
-      url: '/users',
-      data: $('form').serialize() + `&location=${country ? country : '-'}`,
-      success: function (result) {
-        showMessage('Your Account Sccessfully Created!', 'success');
-        setTimeout(() => {
-          window.location.href = result.redirectUrl;
-        }, 2500);
-      },
-      error: function (error) {
-        var errorMsg = error.responseText ? JSON.parse(error.responseText) : '';
-        if (errorMsg?.errors?.password) {
-          errorMsg = errorMsg.errors.password.message;
-        } else if (errorMsg?.code || errorMsg?.errors?.email) {
-          errorMsg = errorMsg.code ? 'Email already exists!' : 'Email is not valid!';
-        } else {
-          errorMsg = 'Something went wrong! Please try again later.';
-        }
-        showMessage(errorMsg, 'error');
-      }
-    });
+    const country = data.city.name + ', ' + data.country.name;
+    const formData = $('form').serialize() + `&location=${country || '-'}`;
+    const result = await $.post('/users', formData);
+    showMessage('Your Account Successfully Created!', 'success');
+    setTimeout(() => {
+      window.location.href = result.redirectUrl;
+    }, 2500);
   } catch (error) {
-    showMessage('Something went wrong!', 'error');
+    const errorMsg =
+      error.responseJSON?.errors?.password?.message || error?.responseJSON?.code
+        ? 'Email already exists!'
+        : error?.responseJSON?.errors?.email
+        ? 'Email is not valid!'
+        : 'Something went wrong! Please try again later.';
+    showMessage(errorMsg, 'error');
   } finally {
     spinner.stop();
-    $('input[type="submit"]').removeAttr('disabled', 'disabled');
+    $('input[type="submit"]').attr('disabled', false);
   }
 });
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     LOGIN      >>>>>>>>>>>>>>>>>>>>>>>>>>
+$('.login-form').on('submit', function (event) {
+  event.preventDefault();
 
-$('.login-form').on('submit', function (e) {
-  e.preventDefault();
-  $('input[type="submit"]').attr('disabled', 'disabled');
+  // Disable the submit button and start the spinner animation
+  const submitButton = $(this).find('input[type="submit"]');
+  submitButton.prop('disabled', true);
   spinner.start();
-  $.ajax({
-    type: 'POST',
-    url: '/users/login',
-    data: $('form').serialize(),
-    success: function (result) {
+
+  const formData = $(this).serialize();
+  $.post('/users/login', formData)
+    .done((response) => {
+      // Stop the spinner animation and enable the submit button
       spinner.stop();
-      $('input[type="submit"]').removeAttr('disabled', 'disabled');
-      showMessage('Login Succesfully!', 'success');
-      setAccessToken(result.accessToken);
+      submitButton.prop('disabled', false);
+
+      // Display a success message and set the access token in local storage
+      showMessage('Login Successfully!', 'success');
+      setAccessToken(response.accessToken);
+
+      // Redirect the user to the home page after a delay of 2.5 seconds
       setTimeout(() => {
         window.location.href = '/';
       }, 2500);
-    },
-    error: function (error) {
+    })
+    .fail((error) => {
+      // Stop the spinner animation and enable the submit button
       spinner.stop();
-      $('input[type="submit"]').removeAttr('disabled', 'disabled');
+      submitButton.prop('disabled', false);
+
+      // Display an error message if the server returns an error message
       showMessage(error.responseJSON?.error, 'error');
-    }
-  });
+    });
 });
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     LOGOUT      >>>>>>>>>>>>>>>>>>>>>>>>>>
 
-$('.logout-btn').click(function () {
+$('.logout-btn').click(async function () {
   spinner.start();
-  $.ajax({
-    type: 'POST',
-    url: '/users/logout',
-    beforeSend: setReqHeader,
-    success: function (result) {
-      location.replace(result.redirectUrl);
-    },
-    error: async function (error) {
-      if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-        try {
-          const newAccessToken = await getNewAccessToken();
-          if (!newAccessToken) return location.replace('/login');
-          $.ajax({
-            type: 'POST',
-            url: '/users/logout',
-            beforeSend: setReqHeader,
-            success: function (result) {
-              location.replace(result.redirectUrl);
-            }
-          });
-        } catch (error) {
-          showMessage('Session Expired!', 'error');
-          setTimeout(() => {
-            location.replace('/login');
-          }, 2500);
-        }
-      } else {
-        showMessage(error, 'error');
-      }
+  try {
+    const response = await callToApi('POST', '/users/logout', null);
+    location.replace(response.redirectUrl);
+  } catch (error) {
+    const errJson = error.responseJSON?.error;
+    if (errJson === 'EXPIRED_TOKEN') {
+      const response = await callApiWithNewToken('POST', '/users/logout', null);
+      location.replace(response.redirectUrl);
+    } else if (errJson) {
+      return showMessage(errJson, 'error');
+    } else {
+      showMessage('Something went wrong.');
     }
-  }).done(() => {
-    spinner.stop('center');
+  } finally {
+    spinner.stop();
     deleteAccessToken();
-  });
+  }
 });
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     LOGOUT  ALL    >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('.logout-all-btn').click(async function () {
-  spinner.start();
   try {
-    const response = await CallToApi('POST', '/users/logoutAll', null);
-    showMessage(response.message, 'success');
+    spinner.start();
+    const response = await callToApi('POST', '/users/logoutAll', null);
+    showMessage(response.message);
   } catch (error) {
-    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-      const newAccessToken = await getNewAccessToken();
-      if (!newAccessToken) return location.replace('/login');
-      return showMessage('Try Again');
-    } else if (error.responseJSON?.error) {
-      return showMessage(error.responseJSON?.error, 'error');
+    const errJson = error.responseJSON?.error;
+    if (errJson === 'EXPIRED_TOKEN') {
+      const response = await callApiWithNewToken('POST', '/users/logoutAll', null);
+      return showMessage(response.message);
+    } else if (errJson) {
+      return showMessage(errJson, 'error');
+    } else {
+      showMessage('Something went wrong.');
     }
-    showMessage('Something went wrong.');
   } finally {
     spinner.stop();
   }
@@ -428,7 +399,7 @@ $('#save-profile-btn').on('click', async function () {
   const data = { email, username, fullName };
   spinner.start();
   try {
-    const response = await CallToApi('PATCH', '/users', data);
+    const response = await callToApi('PATCH', '/users', data);
     $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage('Updated Successfully', 'success');
     setTimeout(() => {
@@ -439,7 +410,20 @@ $('#save-profile-btn').on('click', async function () {
       $('.email').text(response.email);
     }, 3100);
   } catch (error) {
-    handleUpdateUserError(error, data);
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      const response = await callApiWithNewToken('PATCH', '/users', data);
+      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+      showMessage('Updated Successfully', 'success');
+      setTimeout(() => {
+        $('.modal').removeClass('show').hide();
+        $('.fade').removeClass('modal-backdrop');
+        $('.fullName').text(response.fullName);
+        $('.username').text(response.username);
+        $('.email').text(response.email);
+      }, 3100);
+    } else {
+      showMessage(responseJSON?.error, 'error');
+    }
   } finally {
     spinner.stop();
     $('#save-profile-btn').removeAttr('disabled');
@@ -453,7 +437,7 @@ $('#delete-profile-form').on('submit', async function (e) {
   if (!password) return;
   spinner.start();
   try {
-    const response = await CallToApi('DELETE', '/users', { password });
+    await callToApi('DELETE', '/users', { password });
     $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClass('body-bg');
     setTimeout(() => {
       deleteAccessToken();
@@ -467,8 +451,9 @@ $('#delete-profile-form').on('submit', async function (e) {
       return showMessage('Try Again');
     } else if (error.responseJSON?.error) {
       return showMessage(error.responseJSON?.error, 'error');
+    } else {
+      showMessage('Something went wrong.', 'error');
     }
-    showMessage('Something went wrong.', 'error');
   } finally {
     spinner.stop();
   }
@@ -476,9 +461,12 @@ $('#delete-profile-form').on('submit', async function (e) {
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     PICTURE INPUT      >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('input[type=file]').on('change', function () {
-  const file = $('input[type=file]');
-  if (!file[0].files.length) return $('#upload-picture-btn').addClass('d-none');
-  $('#upload-picture-btn').removeClass('d-none');
+  const file = $(this);
+  if (!file[0].files.length) {
+    $('#upload-picture-btn').addClass('d-none');
+  } else {
+    $('#upload-picture-btn').removeClass('d-none');
+  }
 });
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     UPLOAD PICTURE      >>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -486,23 +474,27 @@ $('#picture-form').on('submit', async function (e) {
   e.preventDefault();
   const file = $('input[type=file]')[0].files[0];
   if (!file) return;
+
   const formData = new FormData();
   formData.append('avatar', file);
 
-  var options = {
-    body: formData,
+  const options = {
     method: 'POST',
-    headers: { Authorization: `Bearer ${getAccessToken()}` }
+    headers: { Authorization: `Bearer ${getAccessToken()}` },
+    body: formData
   };
+
   spinner.start();
-  var errorMsg;
-  var avatarImgSrc = $('.avatar-img')[0].src;
+  let errorMsg;
+  const avatarImgSrc = $('.avatar-img')[0].src;
+
   try {
     const response = await fetch('/users/me/avatar', options);
     if (!response.ok && response.status === 403) {
       errorMsg = 'EXPIRED_TOKEN';
       throw new Error();
     }
+
     $('.avatar-img').attr('src', '/assets/img/loading.svg');
     const data = await response.json();
     setTimeout(() => {
@@ -534,100 +526,101 @@ $('#picture-form').on('submit', async function (e) {
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     DELETE PICTURE      >>>>>>>>>>>>>>>>>>>>>>>>>>
 $('#delete-picture-btn').on('click', async function () {
-  spinner.start();
+  const avatarImg = $('.avatar-img');
   try {
-    const response = await CallToApi('DELETE', '/users/me/avatar', null);
-    $('#delete-picture-btn').remove();
-    $('.avatar-img').attr('src', '/assets/img/loading.svg');
+    spinner.start();
+    const response = await callToApi('DELETE', '/users/me/avatar', null);
+    avatarImg.attr('src', '/assets/img/loading.svg');
     setTimeout(() => {
-      $('.avatar-img').attr('src', 'https://img.icons8.com/stickers/100/user.png');
+      avatarImg.attr('src', 'https://img.icons8.com/stickers/100/user.png');
     }, 1500);
     $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage(response.message, 'success');
   } catch (error) {
     if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-      const newAccessToken = await getNewAccessToken();
-      if (!newAccessToken) return location.replace('/login');
-      $('.modal-msg-div').css({ 'background-color': '#ffe670', 'border-radius': '7px' });
-      return showMessage('Try Again.');
+      const response = await callApiWithNewToken('DELETE', '/users/me/avatar', null);
+      avatarImg.attr('src', '/assets/img/loading.svg');
+      setTimeout(() => {
+        avatarImg.attr('src', 'https://img.icons8.com/stickers/100/user.png');
+      }, 1500);
+      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+      showMessage(response.message, 'success');
+    } else {
+      showMessage('Something went wrong.', 'error');
     }
-    showMessage('Something went wrong.', 'error');
   } finally {
     spinner.stop();
+    $('#delete-picture-btn').remove();
   }
 });
 
 //2   <<<<<<<<<<<<<<<<<<<<<<<     CREATE URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
-$('.url-form').on('submit', function (e) {
+$('.url-form').on('submit', async function (e) {
   e.preventDefault();
-  if (!validateUrl($('input[name="url"]').val())) {
-    return showMessage('Error: Url is not valid!', 'error');
+  const urlInput = $('input[name="url"]').val();
+  if (!validateUrl(urlInput)) {
+    return showMessage('Url is not valid!', 'error');
   }
-  $('button[type="submit"]').attr('disabled', true);
+  const formBtn = $('button[type="submit"]');
+  formBtn.prop('disabled', true);
   $('.short-url-div').empty();
-  spinner.start();
-  $.ajax({
-    type: 'POST',
-    url: '/url',
-    beforeSend: setReqHeader,
-    data: $('form').serialize(),
-    success: function (result) {
-      $('button[type="submit"]').removeAttr('disabled');
-      spinner.stop();
-      showNewGeneratedUrl(result);
-    },
-    error: async function (error) {
-      $('button[type="submit"]').removeAttr('disabled');
-      spinner.stop();
-      if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-        try {
-          const newAccessToken = await getNewAccessToken();
-          if (!newAccessToken) return location.replace('/login');
-          $.ajax({
-            type: 'POST',
-            url: '/url',
-            data: $('form').serialize(),
-            beforeSend: setReqHeader,
-            success: function (result) {
-              showNewGeneratedUrl(result);
-            }
-          });
-        } catch (error) {
-          showMessage('Session Expired!', 'error');
-          deleteAccessToken();
-          setTimeout(() => {
-            location.replace('/login');
-          }, 2500);
-        }
-      } else {
-        showMessage(error.responseJSON?.error, 'error');
-      }
+  try {
+    const response = await callToApi('POST', '/url', $(this).serialize());
+    showNewGeneratedUrl(response);
+  } catch (error) {
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      const response = await callApiWithNewToken('POST', '/url', $(this).serialize());
+      showNewGeneratedUrl(response);
+    } else {
+      showMessage(error.responseJSON?.error, 'error');
     }
-  });
+  } finally {
+    spinner.stop();
+    formBtn.removeAttr('disabled');
+  }
 });
 
 //2   <<<<<<<<<<<<<<<<<<<<<<<     ANALYTICS URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
-$('.analytics-form').on('submit', function (e) {
+$('.analytics-form').on('submit', async function (e) {
   e.preventDefault();
-  if (!validateUrl($('input[name="url"]').val())) {
-    return showMessage('Url is not valid!', 'error');
-  }
-  const id = $('input[name="url"]').val().split('/url/')[1];
-  if (!id) return showMessage('Please valid url!');
-  $('button[type="submit"]').attr('disabled', true);
-  $('.analytics-data-div').css('display', 'none');
+  const analyticsDiv = $('.analytics-data-div');
+  const analyticsBtn = $('button[type="submit"]');
+  const url = $('input[name="url"]').val();
+  // if (!validateUrl(url)) {
+  //   return showMessage('Url is not valid!', 'error');
+  // }
+
+  const id = url.split('/url/')[1];
+
+  if (!id) return showMessage('Please use valid url!');
+
+  analyticsBtn.prop('disabled', true);
+  analyticsDiv.hide();
+
   spinner.start();
-  $.ajax({
-    type: 'GET',
-    url: '/url/analytics',
-    data: { id },
-    beforeSend: setReqHeader,
-    success: function (result) {
-      $('button[type="submit"]').removeAttr('disabled');
-      spinner.stop();
-      $('.analytics-data-div').css('display', 'block');
+  try {
+    const response = await callToApi('GET', '/url/analytics', { id });
+    analyticsDiv.show();
+    $('.table-body').empty();
+    response.clickHistory?.forEach((history, index) => {
+      $('.total-clicks')
+        .empty()
+        .append(index + 1);
+      $('.table-body').append(`
+        <tr>
+        <th scope="row">${index + 1}</th>
+        <td>${history.date}</td>
+        <td>${history.ipAddress}</td>
+        <td>${response.redirectUrl}</td>
+        </tr>
+        `);
+    });
+  } catch (error) {
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      const response = await callApiWithNewToken('GET', '/url/analytics', { id });
+      analyticsDiv.show();
       $('.table-body').empty();
-      result.clickHistory?.forEach((history, index) => {
+      response.clickHistory?.forEach((history, index) => {
         $('.total-clicks')
           .empty()
           .append(index + 1);
@@ -636,26 +629,19 @@ $('.analytics-form').on('submit', function (e) {
         <th scope="row">${index + 1}</th>
         <td>${history.date}</td>
         <td>${history.ipAddress}</td>
-        <td>${result.redirectUrl}</td>
+        <td class='overflow-hidden'>${response.redirectUrl}</td>
         </tr>
         `);
       });
-    },
-    error: async function (error) {
-      $('button[type="submit"]').removeAttr('disabled');
-      spinner.stop();
-      if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-        const newAccessToken = await getNewAccessToken();
-        if (!newAccessToken) return location.replace('/login');
-        $('.analytics-data-div').css('display', 'none');
-        $('.table-body', '.total-clicks').empty();
-        return showMessage('Please Try Again!');
-      }
-      $('.analytics-data-div').css('display', 'none');
+    } else {
+      analyticsDiv.hide();
       $('.table-body', '.total-clicks').empty();
       showMessage(error.responseJSON?.error, 'error');
     }
-  });
+  } finally {
+    spinner.stop();
+    analyticsBtn.prop('disabled', false);
+  }
 });
 
 //2   <<<<<<<<<<<<<<<<<<<<<<<     UPDATE URL      >>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -673,23 +659,12 @@ $('#update-link-btn').on('click', async function () {
   $('#update-link-btn, #delete-link-btn').attr('disabled', true);
 
   try {
-    const response = await CallToApi('PATCH', '/url', { redirectUrl, shortId, status });
-
+    const response = await callToApi('PATCH', '/url', { redirectUrl, shortId, status });
     updateLinkHtml(response);
   } catch (error) {
     if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
-      try {
-        const newAccessToken = await getNewAccessToken();
-
-        if (!newAccessToken) return location.replace('/login');
-
-        const response = await CallToApi('PATCH', '/url', { redirectUrl, shortId, status });
-
-        updateLinkHtml(response);
-      } catch (error) {
-        deleteAccessToken();
-        location.replace('/login');
-      }
+      const response = await callApiWithNewToken('PATCH', '/url', { redirectUrl, shortId, status });
+      updateLinkHtml(response);
     } else {
       $('.modal-msg-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
       showMessage(error.responseJSON?.error, 'error');
@@ -710,7 +685,7 @@ $('#delete-link-btn').on('click', async function () {
   spinner.start();
 
   try {
-    const response = await CallToApi('DELETE', '/url', { shortId });
+    const response = await callToApi('DELETE', '/url', { shortId });
     $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
     showMessage(response.message, 'success');
     setTimeout(() => {
@@ -719,7 +694,19 @@ $('#delete-link-btn').on('click', async function () {
       $(`.link-row-id-${shortId}`).remove();
     }, 3100);
   } catch (error) {
-    handleDeleteError(error, shortId);
+    if (error.responseJSON?.error === 'EXPIRED_TOKEN') {
+      const response = await callApiWithNewToken('DELETE', '/url', { shortId });
+      $('.modal-msg-div').css({ 'background-color': '#6efc64', 'border-radius': '7px' });
+      showMessage(response.message, 'success');
+      setTimeout(() => {
+        $('.modal').removeClass('show').hide();
+        $('.fade').removeClass('modal-backdrop');
+        $(`.link-row-id-${shortId}`).remove();
+      }, 3100);
+    } else {
+      $('.modal-msg-div').css({ backgroundColor: '#ff6b61', borderRadius: '7px' });
+      showMessage(error.responseJSON?.error, 'error');
+    }
   } finally {
     spinner.stop();
     $('#delete-link-btn, #saveLink,  #update-link-btn').removeAttr('disabled');
