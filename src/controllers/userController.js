@@ -116,7 +116,6 @@ const handleUpdateUser = async function (req, res) {
       email: user.email
     });
   } catch (error) {
-    console.log(error);
     if (error.code === 11000 && error.keyPattern.email) {
       return res.status(400).send({ error: 'Email already in use!' });
     }

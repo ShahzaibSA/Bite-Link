@@ -44,4 +44,8 @@ app.use('/dashboard', dashboardRoutes);
 
 app.use('/refresh', refreshTokenRoute);
 
+app.use('*', function (req, res) {
+  res.render('error');
+});
+
 app.listen(port, () => console.log('Server is Running on port', port));

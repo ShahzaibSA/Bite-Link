@@ -452,8 +452,8 @@ $('#delete-profile-form').on('submit', async function (e) {
   if (!password) return;
   spinner.start();
   try {
-    await callToApi('DELETE', '/users', password);
-    $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClass('body-bg');
+    await callToApi('DELETE', '/users', { password });
+    $('.goodbye-div').removeClass('d-none').addClass('goodbye-show').addClandexss('body-bg');
     setTimeout(() => {
       deleteAccessToken();
       location.replace('/signup');
@@ -729,3 +729,19 @@ $('#delete-link-btn').on('click', async function () {
     $('#delete-link-btn, #saveLink,  #update-link-btn').removeAttr('disabled');
   }
 });
+
+// Get the modal
+$('#myImg').click(function () {
+  $('#imgModal').show();
+  $('#img01').prop('src', this.src);
+});
+$('#myImg2').click(function () {
+  $('#imgModal2').show();
+  $('#img02').prop('src', this.src);
+});
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName('close')[0];
+
+// When the user clicks on <span> (x), close the modal
+$('.close').click(() => $('#imgModal').hide());
+$('.close').click(() => $('#imgModal2').hide());

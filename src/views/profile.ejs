@@ -187,7 +187,7 @@
           aria-labelledby="modalEditProfile"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-notify modal-primary" style="max-width: 28%" role="document">
+          <div class="modal-dialog modal-md modal-notify modal-primary" role="document">
             <!--Content-->
             <div class="modal-content text-center">
               <!--Header-->
@@ -316,9 +316,21 @@
                   width="120"
                   height="120"
                   src="<%- data.avatar.url %>"
+                  id="myImg"
                   class="avatar-img avatar avatar-sm me-3 border-radius-lg"
-                  alt="user1"
+                  alt="profile img"
                 />
+                <!-- The Modal -->
+                <div id="imgModal" class="img-modal">
+                  <!-- The Close Button -->
+                  <span class="close">&times;</span>
+
+                  <!-- Modal Content (The Image) -->
+                  <img class="img-modal-content" id="img01" alt="profile img" />
+
+                  <!-- Modal Caption (Image Text) -->
+                  <div id="caption">Profile Image</div>
+                </div>
                 <%} else { %>
                 <img
                   width="120"
