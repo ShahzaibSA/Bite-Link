@@ -6,7 +6,47 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Login</title>
     <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
-
+    <style>
+      main {
+        visibility: hidden;
+      }
+      #loader {
+        border: 12px solid #384949;
+        border-radius: 50%;
+        border-top: 12px solid #fcd201;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+      }
+      .center {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
+      document.onreadystatechange = function () {
+        // var body = document.querySelector('body');
+        var mainDiv = document.querySelector('main');
+        var loader = document.querySelector('#loader');
+        if (document.readyState !== 'complete') {
+          loader.style.visibility = 'visible';
+          mainDiv.style.visibility = 'hidden';
+        } else {
+          loader.style.display = 'none';
+          mainDiv.style.visibility = 'visible';
+        }
+      };
+    </script>
     <!-- Font Icon -->
     <link rel="stylesheet" href="/fonts/material-icon/css/material-design-iconic-font.min.css" />
 
@@ -22,65 +62,68 @@
     <script src="/js/main.js" defer></script>
   </head>
   <body class="html-body">
-    <div class="spinner d-none" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-    <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
-      <div>
-        <img src="/assets/img/logo.svg" alt="logo" />
-        <span>BITE LINK</span>
-      </div>
-    </nav>
-    <div class="body-container">
-      <!-- <div class='container message-div' style='width: 900px;'></div> -->
-      <!-- Sing in  Form -->
-      <section class="sign-in">
-        <div class="message-div"></div>
-        <div class="container">
-          <div class="signin-content">
-            <div class="signin-image">
-              <figure><img src="/assets/img/signin-image.jpg" alt="sing up image" /></figure>
-              <a href="/signup" class="signup-image-link">Create an account</a>
-            </div>
+    <div id="loader" class="center"></div>
 
-            <div class="signin-form" style="margin-top: 2vh">
-              <h2 class="form-title">Sign in</h2>
-              <form class="login-form" id="login-form">
-                <div class="form-group">
-                  <label for="email"><i class="zmdi zmdi-email"></i></label>
-                  <input required type="email" name="email" id="email" placeholder="Your Email" />
-                </div>
-                <div class="form-group">
-                  <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                  <input required type="password" name="password" id="your_pass" placeholder="Password" />
-                </div>
-                <div class="form-group">
-                  <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
-                  <label for="remember-me" class="label-agree-term"
-                    ><span><span></span></span>Remember me</label
-                  >
-                </div>
-                <div class="row d-flex d-inline">
-                  <div class="form-group form-button">
-                    <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
+    <main>
+      <div class="spinner d-none" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav">
+        <div>
+          <img src="/assets/img/logo.svg" alt="logo" />
+          <span>BITE LINK</span>
+        </div>
+      </nav>
+      <div class="body-container">
+        <!-- <div class='container message-div' style='width: 900px;'></div> -->
+        <!-- Sing in  Form -->
+        <section class="sign-in">
+          <div class="message-div"></div>
+          <div class="container">
+            <div class="signin-content">
+              <div class="signin-image">
+                <figure><img src="/assets/img/signin-image.jpg" alt="sing up image" /></figure>
+                <a href="/signup" class="signup-image-link">Create an account</a>
+              </div>
+
+              <div class="signin-form" style="margin-top: 2vh">
+                <h2 class="form-title">Sign in</h2>
+                <form class="login-form" id="login-form">
+                  <div class="form-group">
+                    <label for="email"><i class="zmdi zmdi-email"></i></label>
+                    <input required type="email" name="email" id="email" placeholder="Your Email" />
                   </div>
-                  <div class="h4 mt-4 pt-1 px-3">:</div>
-                  <div class="google-btn-div">
-                    <a href="/users/google-oauth">
-                      <div class="google-icon">
-                        <img width="30px" class="mr-1" alt="Google sign-in" src="/assets/img/google_logo.png" />
-                      </div>
-                      <p>Login</p>
-                    </a>
+                  <div class="form-group">
+                    <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                    <input required type="password" name="password" id="your_pass" placeholder="Password" />
                   </div>
-                </div>
-              </form>
+                  <div class="form-group">
+                    <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                    <label for="remember-me" class="label-agree-term"
+                      ><span><span></span></span>Remember me</label
+                    >
+                  </div>
+                  <div class="row d-flex d-inline">
+                    <div class="form-group form-button">
+                      <input type="submit" name="signin" id="signin" class="form-submit" value="Log in" />
+                    </div>
+                    <div class="h4 mt-4 pt-1 px-3">:</div>
+                    <div class="google-btn-div">
+                      <a href="/users/google-oauth">
+                        <div class="google-icon">
+                          <img width="30px" class="mr-1" alt="Google sign-in" src="/assets/img/google_logo.png" />
+                        </div>
+                        <p>Login</p>
+                      </a>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-
+        </section>
+      </div>
+    </main>
     <!-- Jquery -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"

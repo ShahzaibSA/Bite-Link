@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Dashboard</title>
     <style>
+      aside,
+      .main-content {
+        visibility: hidden;
+      }
       #loader {
-        border: 12px solid #f3f3f3;
+        visibility: visible;
+        border: 12px solid #384949;
         border-radius: 50%;
-        border-top: 12px solid #444444;
+        border-top: 12px solid #fcd201;
         width: 70px;
         height: 70px;
         animation: spin 1s linear infinite;
@@ -32,18 +37,14 @@
       document.onreadystatechange = function () {
         var body = document.querySelector('body');
         var sidebar = document.querySelector('aside');
-        var mainDiv = document.querySelector('main');
+        var mainDiv = document.querySelector('.main-content');
         var loader = document.querySelector('#loader');
         if (document.readyState !== 'complete') {
-          sidebar.style.opacity = 0.3;
-          mainDiv.style.opacity = 0.3;
-          body.style.visibility = 'hidden';
           loader.style.visibility = 'visible';
         } else {
-          sidebar.style.opacity = 1;
-          mainDiv.style.opacity = 1;
+          sidebar.style.visibility = 'visible';
+          mainDiv.style.visibility = 'visible';
           loader.style.display = 'none';
-          body.style.visibility = 'visible';
         }
       };
     </script>

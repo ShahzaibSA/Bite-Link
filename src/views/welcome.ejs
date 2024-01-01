@@ -5,7 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome</title>
     <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
-
+    <style>
+      body {
+        background-color: rgba(0, 0, 0, 0.352) !important;
+      }
+      main {
+        visibility: hidden;
+      }
+      #loader {
+        border: 12px solid #384949;
+        border-radius: 50%;
+        border-top: 12px solid #fcd201;
+        width: 70px;
+        height: 70px;
+        animation: spin 1s linear infinite;
+        /* background-color: #444444; */
+      }
+      .center {
+        position: absolute;
+        z-index: 9999;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
+      document.onreadystatechange = function () {
+        var body = document.querySelector('body');
+        var mainDiv = document.querySelector('main');
+        var loader = document.querySelector('#loader');
+        if (document.readyState !== 'complete') {
+          // mainDiv.style.visibility = 'hidden';
+          // body.style.visibility = 'hidden';
+          // body.style.backgroundColor = 'rgba(0, 0, 0, 0.352)';
+          loader.style.visibility = 'visible';
+        } else {
+          mainDiv.style.visibility = 'visible';
+          loader.style.display = 'none';
+          body.style.visibility = 'visible';
+        }
+      };
+    </script>
     <!-- Main css -->
     <link rel="stylesheet" href="/css/welcome.css" />
     <link href="/css/animate.min.css" rel="stylesheet" />
@@ -21,48 +68,50 @@
   <body>
     <div id="loader" class="center"></div>
     <!-- Image and text -->
-    <nav class="navbar navbar-light">
-      <a class="navbar-brand">
-        <div class="brand">
-          <img src="/assets/img/logo.svg" class="d-inline-block align-top" alt="logo" />
-          <span class='pl-1'>BITE LINK</span>
-        </div>
-      </a>
-    </nav>
-    <div id="hero">
-      <div class="hero-container">
-        <div
-          id="heroCarousel"
-          class="carousel slide carousel-fade"
-          data-bs-ride="carousel"
-          data-bs-interval="5000"
-        >
-          <!-- <ol class="carousel-indicators" id="hero-carousel-indicators"></ol> -->
+    <main>
+      <nav class="navbar navbar-light">
+        <a class="navbar-brand">
+          <div class="brand">
+            <img src="/assets/img/logo.svg" class="d-inline-block align-top" alt="logo" />
+            <span class="pl-1">BITE LINK</span>
+          </div>
+        </a>
+      </nav>
+      <div id="hero">
+        <div class="hero-container">
+          <div
+            id="heroCarousel"
+            class="carousel slide carousel-fade"
+            data-bs-ride="carousel"
+            data-bs-interval="5000"
+          >
+            <!-- <ol class="carousel-indicators" id="hero-carousel-indicators"></ol> -->
 
-          <div class="carousel-inner" role="listbox">
-            <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: url(/assets/img/welcome.jpg)">
-              <div class="carousel-container">
-                <div class="carousel-content">
-                  <h2 class="animate__animated animate__fadeInDown">Welcome to <span>BITE LINK</span></h2>
-                  <p class="animate__animated animate__fadeInUp">
-                    <strong class="heading"
-                      >Unleash the power of simplicity with our advance link management platform.</strong
-                    >
-                    <br />
-                    Say goodbye to lengthy, cumbersome URLs. Our user-friendly interface allows you to effortlessly
-                    create concise and shareable links that make an impact.
-                  </p>
-                  <a type="button" class="btn-get-started animate__animated animate__fadeInUp scrollto"
-                    >Get Started</a
-                  >
+            <div class="carousel-inner" role="listbox">
+              <!-- Slide 1 -->
+              <div class="carousel-item active" style="background-image: url(/assets/img/welcome.jpg)">
+                <div class="carousel-container">
+                  <div class="carousel-content">
+                    <h2 class="animate__animated animate__fadeInDown">Welcome to <span>BITE LINK</span></h2>
+                    <p class="animate__animated animate__fadeInUp">
+                      <strong class="heading"
+                        >Unleash the power of simplicity with our advance link management platform.</strong
+                      >
+                      <br />
+                      Say goodbye to lengthy, cumbersome URLs. Our user-friendly interface allows you to
+                      effortlessly create concise and shareable links that make an impact.
+                    </p>
+                    <button type="button" class="btn-get-started animate__animated animate__fadeInUp scrollto">
+                      Get Started
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
     <!-- End Hero -->
 
     <!-- Jquery -->

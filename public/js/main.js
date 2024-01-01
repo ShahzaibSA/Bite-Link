@@ -342,6 +342,7 @@ $('.google-btn-div').click(function () {
 });
 
 $('.btn-get-started').click(async function () {
+  $('.btn-get-started').prop('disabled', true);
   const newAccessToken = await getNewAccessToken();
   if (!newAccessToken) return location.replace('/login');
   location.replace('/');

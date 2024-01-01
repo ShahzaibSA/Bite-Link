@@ -136,6 +136,7 @@ h6 {
   color: #fff;
   animation-delay: 0.8s;
   border: 2px solid #1bbca3;
+  background-color: transparent;
 }
 
 #hero .btn-get-started:hover {
