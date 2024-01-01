@@ -1,3 +1,5 @@
+require('../utils/passport');
+const passport = require('passport');
 const express = require('express');
 
 const upload = require('../middlewares/upload');
@@ -10,10 +12,20 @@ const {
   handleUpdateUser,
   handleDeleteUser,
   handleUploadUserAvatar,
-  handleDeleteUserAvatar
+  handleDeleteUserAvatar,
+  handleSuccessGoogleOAuth
 } = require('../controllers/userController');
 
 const router = express.Router();
+
+//! Sign up or Login with GOOGLE OAUTH 2.0
+router.get('/google-oauth', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/oauth/error' }),
+  handleSuccessGoogleOAuth
+);
 
 //! Sign Up
 router.post('/', handleSignUpUser);

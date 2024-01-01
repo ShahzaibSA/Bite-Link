@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome</title>
+    <link type="image/png" rel="icon" href="/assets/img/logo.svg" />
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="/css/welcome.css" />
+    <link href="/css/animate.min.css" rel="stylesheet" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="/js/main.js" defer></script>
+  </head>
+  <body>
+    <div id="loader" class="center"></div>
+    <!-- Image and text -->
+    <nav class="navbar navbar-light">
+      <a class="navbar-brand">
+        <div class="brand">
+          <img src="/assets/img/logo.svg" class="d-inline-block align-top" alt="logo" />
+          <span class='pl-1'>BITE LINK</span>
+        </div>
+      </a>
+    </nav>
+    <div id="hero">
+      <div class="hero-container">
+        <div
+          id="heroCarousel"
+          class="carousel slide carousel-fade"
+          data-bs-ride="carousel"
+          data-bs-interval="5000"
+        >
+          <!-- <ol class="carousel-indicators" id="hero-carousel-indicators"></ol> -->
+
+          <div class="carousel-inner" role="listbox">
+            <!-- Slide 1 -->
+            <div class="carousel-item active" style="background-image: url(/assets/img/welcome.jpg)">
+              <div class="carousel-container">
+                <div class="carousel-content">
+                  <h2 class="animate__animated animate__fadeInDown">Welcome to <span>BITE LINK</span></h2>
+                  <p class="animate__animated animate__fadeInUp">
+                    <strong class="heading"
+                      >Unleash the power of simplicity with our advance link management platform.</strong
+                    >
+                    <br />
+                    Say goodbye to lengthy, cumbersome URLs. Our user-friendly interface allows you to effortlessly
+                    create concise and shareable links that make an impact.
+                  </p>
+                  <a type="button" class="btn-get-started animate__animated animate__fadeInUp scrollto"
+                    >Get Started</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Hero -->
+
+    <!-- Jquery -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- Crypto Js -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"
+      integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+  </body>
+</html>

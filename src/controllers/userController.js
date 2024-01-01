@@ -7,6 +7,7 @@ const generateToken = require('../utils/generateToken');
 const { uploadImgToCloudinary, deleteImgFromCloudinary } = require('../services/cloudinary.service');
 const sharp = require('sharp');
 const { bufferToDataURI } = require('../utils/generateBase64Img');
+const getCountry = require('../utils/country');
 
 const handleSignUpUser = async function (req, res) {
   try {
@@ -33,7 +34,7 @@ const handleloginUser = async function (req, res) {
       //   .render('login', { error: 'No Account Found. Please Sign Up!' });
       return res.status(400).send({ error: 'No Account Found. Please Sign Up!' });
     }
-
+    if (!user.password) return res.status(400).send({ error: 'PLEASE LOGIN WITH GOOGLE.' });
     const passwordMatched = await bcrypt.compare(password, user.password);
     if (!passwordMatched) {
       return res.status(400).send({ error: 'Email or Password is not correct!' });
@@ -193,6 +194,48 @@ const handleDeleteUserAvatar = async function (req, res) {
   }
 };
 
+const handleSuccessGoogleOAuth = async function (req, res) {
+  if (!req.user) res.redirect('/users/oauth/error');
+  try {
+    const googleUser = req.user?._json;
+    googleUser.location = await getCountry();
+    const user = await User.findOneOrCreate(googleUser.email, googleUser);
+
+    const refreshTokenCookie = req.cookies?.refreshToken;
+    let refreshTokenArr = refreshTokenCookie
+      ? user.refreshTokens.filter((rt) => rt.refreshToken !== refreshTokenCookie)
+      : user.refreshTokens;
+
+    const accessToken = generateToken(user._id.toString(), 'AT', '30m');
+    const jwt = generateToken(user._id.toString(), 'JWT', '1d');
+    const newRefreshToken = generateToken(user._id.toString(), 'RT', '1d');
+
+    user.refreshTokens = refreshTokenArr.concat({ refreshToken: newRefreshToken });
+    await user.save();
+
+    res.cookie('jwt', jwt, {
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000
+    });
+
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000
+    });
+    // const jsonObj = JSON.stringify(user);
+    // res.send(user);
+    res.render('welcome');
+
+    // res.json(user);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+};
+
 module.exports = {
   handleSignUpUser,
   handleloginUser,
@@ -201,5 +244,6 @@ module.exports = {
   handleDeleteUser,
   handleUpdateUser,
   handleUploadUserAvatar,
-  handleDeleteUserAvatar
+  handleDeleteUserAvatar,
+  handleSuccessGoogleOAuth
 };

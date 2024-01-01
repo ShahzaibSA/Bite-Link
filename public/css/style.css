@@ -278,8 +278,8 @@ figure {
   background: #6dabe4;
   color: #fff;
   border-bottom: none;
-  width: auto;
-  padding: 15px 39px;
+  width: 105px;
+  padding: 15px 29px;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -596,7 +596,7 @@ label.valid {
 .html-body{
   background-color: #1abc9c;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .navbar{

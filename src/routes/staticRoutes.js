@@ -1,7 +1,16 @@
 const express = require('express');
+
 const { restrictToLoggedInUser } = require('../middlewares/auth');
 
 const router = express.Router();
+
+router.get('/users/oauth/error', function (req, res) {
+  res.status(400).send({ error: 'GOOGLE OAUTH FAIL' });
+});
+
+router.get('/welcome', function (req, res) {
+  res.render('welcome');
+});
 
 router.get('/signup', function (req, res) {
   res.render('signup');

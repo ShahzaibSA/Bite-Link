@@ -1,6 +1,8 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { connectDB } = require('./db');
@@ -31,6 +33,23 @@ app.use(express.static(path.resolve('public')));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 connectDB(process.env.MONGO_URL).then(() => console.log('DB Connected'));
 

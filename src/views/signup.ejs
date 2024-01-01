@@ -72,9 +72,18 @@
                   <label for="pass"><i class="zmdi zmdi-lock"></i></label>
                   <input required type="password" name="password" id="pass" placeholder="Password" />
                 </div>
-                <div class="d-flex d-inline">
+                <div class="row d-flex d-inline">
                   <div class="form-group form-button">
-                    <input type="submit" name="signup" id="signup" class="form-submit" value="Register" />
+                    <input type="submit" name="signin" id="signin" class="form-submit" value="Signup" />
+                  </div>
+                  <div class="h4 mt-4 pt-1 px-2">:</div>
+                  <div class="google-btn-div mr-1">
+                    <a href="/users/google-oauth">
+                      <div class="google-icon">
+                        <img width="30px" class="mr-1" alt="Google sign-in" src="/assets/img/google_logo.png" />
+                      </div>
+                      <p>Signup</p>
+                    </a>
                   </div>
                 </div>
               </form>
@@ -101,15 +110,6 @@
       integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
       crossorigin="anonymous"
     ></script>
-    <script>
-      var win = navigator.platform.indexOf('Win') > -1;
-      if (win && document.querySelector('#sidenav-scrollbar')) {
-        var options = {
-          damping: '0.5'
-        };
-        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-      }
-    </script>
   </body>
   <!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>

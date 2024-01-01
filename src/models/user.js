@@ -3,6 +3,10 @@ const validator = require('validator');
 
 const userSchema = new mongoose.Schema(
   {
+    emailVerified: {
+      type: Boolean,
+      default: false
+    },
     username: {
       type: String,
       trim: true,
@@ -25,22 +29,17 @@ const userSchema = new mongoose.Schema(
         }
       }
     },
-    location: {
-      type: String
-    },
+    location: { type: String },
     avatar: {
       url: {
         type: String,
         default: null
-        // default: 'https://img.icons8.com/stickers/100/user.png'
       },
-      public_id: {
-        type: String
-      }
+      public_id: { type: String }
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
       // minlength: 5,
       trim: true,
       validate(value) {
@@ -75,6 +74,29 @@ userSchema.methods.toJSON = function () {
 
   return userObject;
 };
+
+userSchema.statics.findOneOrCreate = async function findOneOrCreate(email, doc) {
+  const self = this;
+  const newDocument = {
+    fullName: doc.name,
+    username: doc.email.split('@')[0],
+    email: doc.email,
+    emailVerified: doc.email_verified,
+    location: doc.location
+  };
+  try {
+    const foundUser = await self.findOne({ email });
+    if (foundUser) return foundUser;
+    const createUser = await self.create(newDocument);
+    createUser.avatar.url = doc.picture;
+    createUser.avatar.public_id = `avatar-${createUser._id.toString()}`;
+    await createUser.save();
+    return createUser;
+  } catch (error) {
+    return error;
+  }
+};
+
 const User = mongoose.model('users', userSchema);
 
 module.exports = User;

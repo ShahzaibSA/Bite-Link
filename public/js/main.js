@@ -335,6 +335,18 @@ $('.login-form').on('submit', function (event) {
     });
 });
 
+//   <<<<<<<<<<<<<<<<<<<<<<<     GOOGLE AUTH      >>>>>>>>>>>>>>>>>>>>>>>>>>
+
+$('.google-btn-div').click(function () {
+  spinner.start();
+});
+
+$('.btn-get-started').click(async function () {
+  const newAccessToken = await getNewAccessToken();
+  if (!newAccessToken) return location.replace('/login');
+  location.replace('/');
+});
+
 //   <<<<<<<<<<<<<<<<<<<<<<<     LOGOUT      >>>>>>>>>>>>>>>>>>>>>>>>>>
 
 $('.logout-btn').click(async function () {
