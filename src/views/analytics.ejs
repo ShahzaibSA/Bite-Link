@@ -7,10 +7,6 @@
     <meta name="author" content="" />
     <title>Analytics</title>
     <style>
-      aside,
-      .main-content {
-        visibility: hidden;
-      }
       #loader {
         visibility: visible;
         border: 12px solid #384949;
@@ -37,14 +33,20 @@
     </style>
     <script>
       document.onreadystatechange = function () {
-        var sidebar = document.querySelector('aside');
-        var mainDiv = document.querySelector('.main-content');
+        var body = document.querySelector('body');
+        var header = document.querySelector('header');
+        var navbar = document.querySelector('nav');
+        var mainDiv = document.querySelector('main');
         var loader = document.querySelector('#loader');
         if (document.readyState !== 'complete') {
-          loader.style.visibility = 'visible';
+          mainDiv.style.display = 'none';
+          navbar.style.display = 'none';
+          header.style.display = 'none';
+          loader.style.display = 'block';
         } else {
-          sidebar.style.visibility = 'visible';
-          mainDiv.style.visibility = 'visible';
+          mainDiv.style.display = 'block';
+          navbar.style.display = 'block';
+          header.style.display = 'block';
           loader.style.display = 'none';
         }
       };
