@@ -343,6 +343,7 @@ $('.google-btn-div').click(function () {
 
 $('.btn-get-started').click(async function () {
   $('.btn-get-started').prop('disabled', true);
+  spinner.start();
   const searchParams = new URLSearchParams(window.location.search);
   if (searchParams.has('welcomeToken')) {
     const welcomeToken = searchParams.get('welcomeToken');
@@ -351,12 +352,14 @@ $('.btn-get-started').click(async function () {
       url: '/users/verify',
       data: { welcomeToken },
       success: function (result) {
+        spinner.stop();
         showMessage('Email Verified. You can now login!', 'success');
         setTimeout(() => {
           location.replace('/login');
         }, 3000);
       },
       error: function (error) {
+        spinner.stop();
         showMessage(error.responseJSON?.message);
         setTimeout(() => {
           location.replace('/login');

@@ -161,3 +161,17 @@ h6 {
     width: 5%;
   }
 }
+
+.body-bg {
+  background-color: rgba(0, 0, 0, 0.352) !important;
+}
+.spinner-show {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  right: 10px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url('../assets/img/loader.gif') 50% 50% no-repeat;
+}
