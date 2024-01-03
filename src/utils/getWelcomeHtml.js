@@ -1,4 +1,7 @@
+require('dotenv').config();
+
 const welcomeHtml = function (name, welcomeToken) {
+  console.log(process.env.BASE_URL);
   const html = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -483,7 +486,7 @@ const welcomeHtml = function (name, welcomeToken) {
                               <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
                                   <td align="center">
-                                    <a href="http://localhost:5000/users/verify?welcomeToken=${welcomeToken}" class="f-fallback button" target="_blank"
+                                    <a href="${process.env.BASE_URL}/users/verify?welcomeToken=${welcomeToken}" class="f-fallback button" target="_blank"
                                       >Do this Next</a
                                     >
                                   </td>
