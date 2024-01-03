@@ -10,12 +10,12 @@ const mailer = async (email, name, welcomeToken) => {
         rejectUnauthorized: false // Accept self-signed certificates
       },
       auth: {
-        user: process.env.MailerEmail,
-        pass: process.env.MailerPwd
+        user: process.env.MAILER_EMAIL,
+        pass: process.env.MAILER_EMAIL_PASS
       }
     });
     const mailOptions = {
-      from: process.env.MailerEmail,
+      from: process.env.MAILER_EMAIL,
       to: email,
       subject: 'Welcome to BITE LINK',
       html: welcomeHtml(name, welcomeToken)
