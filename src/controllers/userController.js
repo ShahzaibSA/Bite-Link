@@ -15,7 +15,6 @@ const handleSignUpUser = async function (req, res) {
   try {
     const body = req.body;
     const hashedPwd = await bcrypt.hash(body.password, 10);
-    await User.findOneAndDelete({ email: body.email });
     const user = await User.create({ ...body, password: hashedPwd });
     const welcomeToken = jwt.sign({ uid: user._id.toString() }, process.env.ACCESS_TOKEN_SECRET);
     await mailer(user.email, user.fullName, welcomeToken);
@@ -229,7 +228,6 @@ const handleSuccessGoogleOAuth = async function (req, res) {
       ? user.refreshTokens.filter((rt) => rt.refreshToken !== refreshTokenCookie)
       : user.refreshTokens;
 
-    const accessToken = generateToken(user._id.toString(), 'AT', '30m');
     const jwt = generateToken(user._id.toString(), 'JWT', '1d');
     const newRefreshToken = generateToken(user._id.toString(), 'RT', '1d');
 
