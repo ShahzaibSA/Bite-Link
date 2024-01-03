@@ -38,13 +38,13 @@ h6 {
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
-#hero {
-  /* width: 99%; */
-  /* height: 97.5vh; */
-  /* background-color: rgba(21, 27, 26, 0.7); */
-  /* overflow: hidden; */
-  /* padding: 0; */
-}
+/* #hero{ */
+/* width: 99%; */
+/* height: 97.5vh; */
+/* background-color: rgba(21, 27, 26, 0.7); */
+/* overflow: hidden; */
+/* padding: 0; */
+/* } */
 
 #hero .carousel-item {
   width: 100%;
@@ -96,7 +96,7 @@ h6 {
   color: #fff;
 }
 
-#hero strong {
+.heading {
   color: #038eff;
   font-size: 25px;
   letter-spacing: 0.5px;

@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const Url = require('../models/url');
@@ -8,13 +9,20 @@ const { uploadImgToCloudinary, deleteImgFromCloudinary } = require('../services/
 const sharp = require('sharp');
 const { bufferToDataURI } = require('../utils/generateBase64Img');
 const getCountry = require('../utils/country');
+const mailer = require('../utils/mailer');
 
 const handleSignUpUser = async function (req, res) {
   try {
     const body = req.body;
     const hashedPwd = await bcrypt.hash(body.password, 10);
-    await User.create({ ...body, password: hashedPwd });
-    res.status(201).send({ redirectUrl: req.get('origin') + '/login' });
+    await User.findOneAndDelete({ email: body.email });
+    const user = await User.create({ ...body, password: hashedPwd });
+    const welcomeToken = jwt.sign({ uid: user._id.toString() }, process.env.ACCESS_TOKEN_SECRET);
+    await mailer(user.email, user.fullName, welcomeToken);
+    res.status(201).send({
+      redirectUrl: req.get('origin') + '/login',
+      message: 'An email is sent to your email address. Please verify your email!'
+    });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -29,11 +37,12 @@ const handleloginUser = async function (req, res) {
 
     const user = await User.findOne({ email });
     if (!user) {
-      // return res
-      //   .status(400)
-      //   .render('login', { error: 'No Account Found. Please Sign Up!' });
       return res.status(400).send({ error: 'No Account Found. Please Sign Up!' });
     }
+    if (!user.emailVerified)
+      return res
+        .status(400)
+        .send({ error: 'An email is sent to your email address. Please verify it to continue!' });
     if (!user.password) return res.status(400).send({ error: 'PLEASE LOGIN WITH GOOGLE.' });
     const passwordMatched = await bcrypt.compare(password, user.password);
     if (!passwordMatched) {
@@ -144,6 +153,20 @@ const handleDeleteUser = async function (req, res) {
   }
 };
 
+const handleVerifyUser = async function (req, res) {
+  try {
+    const { welcomeToken } = req.body;
+    const decoded = jwt.verify(welcomeToken, process.env.ACCESS_TOKEN_SECRET);
+    if (!decoded) return res.status(500).send();
+    const user = await User.findOne({ _id: decoded.uid });
+    if (user.emailVerified) return res.status(400).send({ message: 'Email Already Verified' });
+    user.emailVerified = true;
+    await user.save();
+    res.send({ message: 'Email Verified' });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 // const uploadSingleImage = upload.single('avatar');
 const handleUploadUserAvatar = async function (req, res) {
   // uploadSingleImage(req, res, function (err) {
@@ -243,6 +266,7 @@ module.exports = {
   handlelogoutAllUsers,
   handleDeleteUser,
   handleUpdateUser,
+  handleVerifyUser,
   handleUploadUserAvatar,
   handleDeleteUserAvatar,
   handleSuccessGoogleOAuth

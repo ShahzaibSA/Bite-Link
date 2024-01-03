@@ -35,4 +35,9 @@ const restrictToLoggedInUser = async function (req, res, next) {
   });
 };
 
-module.exports = { verifyJWT, restrictToLoggedInUser };
+const hasWelcomeToken = function (req, res, next) {
+  if (req.query.welcomeToken || req.body.welcomeToken) return next();
+  res.status(400).send({ message: 'UNAUTHORIZED' });
+};
+
+module.exports = { verifyJWT, restrictToLoggedInUser, hasWelcomeToken };

@@ -282,7 +282,7 @@ $('.register-form').on('submit', async function (e) {
     const country = data.city.name + ', ' + data.country.name;
     const formData = $('form').serialize() + `&location=${country || '-'}`;
     const result = await $.post('/users', formData);
-    showMessage('Your Account Successfully Created!', 'success');
+    showMessage(result.message, 'success');
     setTimeout(() => {
       window.location.href = result.redirectUrl;
     }, 2500);
@@ -343,9 +343,31 @@ $('.google-btn-div').click(function () {
 
 $('.btn-get-started').click(async function () {
   $('.btn-get-started').prop('disabled', true);
-  const newAccessToken = await getNewAccessToken();
-  if (!newAccessToken) return location.replace('/login');
-  location.replace('/');
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has('welcomeToken')) {
+    const welcomeToken = searchParams.get('welcomeToken');
+    $.ajax({
+      type: 'POST',
+      url: '/users/verify',
+      data: { welcomeToken },
+      success: function (result) {
+        showMessage('Email Verified. You can now login!', 'success');
+        setTimeout(() => {
+          location.replace('/login');
+        }, 3000);
+      },
+      error: function (error) {
+        showMessage(error.responseJSON?.message);
+        setTimeout(() => {
+          location.replace('/login');
+        }, 3000);
+      }
+    });
+  } else {
+    const newAccessToken = await getNewAccessToken();
+    if (!newAccessToken) return location.replace('/login');
+    location.replace('/');
+  }
 });
 
 //   <<<<<<<<<<<<<<<<<<<<<<<     LOGOUT      >>>>>>>>>>>>>>>>>>>>>>>>>>

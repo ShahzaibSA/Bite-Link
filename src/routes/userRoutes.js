@@ -3,7 +3,7 @@ const passport = require('passport');
 const express = require('express');
 
 const upload = require('../middlewares/upload');
-const { verifyJWT } = require('../middlewares/auth');
+const { verifyJWT, hasWelcomeToken } = require('../middlewares/auth');
 const {
   handleSignUpUser,
   handleloginUser,
@@ -11,6 +11,7 @@ const {
   handlelogoutAllUsers,
   handleUpdateUser,
   handleDeleteUser,
+  handleVerifyUser,
   handleUploadUserAvatar,
   handleDeleteUserAvatar,
   handleSuccessGoogleOAuth
@@ -38,6 +39,9 @@ router.patch('/', verifyJWT, handleUpdateUser);
 
 //! Delete User
 router.delete('/', verifyJWT, handleDeleteUser);
+
+//! Verify User
+router.post('/verify', hasWelcomeToken, handleVerifyUser);
 
 //! Upload Avatar
 // router.post('/me/avatar', verifyJWT, handleUserAvatar);
